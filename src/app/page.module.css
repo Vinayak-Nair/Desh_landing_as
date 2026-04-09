@@ -8,27 +8,51 @@
   background: var(--surface);
 }
 
+/* ── Sticky hero wrapper ──────────────────────────────────────
+ * Pins the hero flush under the nav (56 px) while the second
+ * section scrolls over it.  height = viewport minus nav so the
+ * wrapper ends exactly at the viewport bottom — the section
+ * peeks 28 px below via its margin-top: -28px.
+ * overflow:hidden clips the landscape fg.png bleed.
+ * ────────────────────────────────────────────────────────── */
+.heroWrapper {
+  position: sticky;
+  top: 56px;                      /* stick directly beneath the 56px nav */
+  height: calc(100dvh - 56px);   /* fills the remaining viewport */
+  overflow: hidden;
+  z-index: 1;
+}
+
 .hero {
-  --hero-landscape-height: calc(100vw * 2359 / 2688);
   --hero-phone-width: clamp(132px, 32vw, 174px);
   --hero-phone-height: calc(var(--hero-phone-width) * 356 / 174);
-  --hero-phone-lift: 58;
+  --hero-phone-lift: 0;
   position: relative;
-  overflow: hidden;
-  padding: 28px 18px 0;
+  /* visible: landscape bleeds below; phone stays within hero so no overflow issue */
+  overflow: visible;
+  padding: 52px 18px 0;
   background: linear-gradient(180deg, #ffefb8 0%, #fff9e8 43%, #ffffff 100%);
+  display: flex;
+  flex-direction: column;
 }
 
 .heroCopy {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   max-width: 338px;
   margin: 0 auto;
   text-align: center;
-  animation: hero-rise 0.7s ease both;
+  /* entrance handled by framer-motion */
 }
 
-.heroTitle,
+.heroTitle {
+  margin: 0;
+  font-family: 'General Sans', var(--font-display), sans-serif;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.04em;
+}
+
 .sectionHeading h2,
 .growthTitle,
 .communityTitle,
@@ -52,8 +76,9 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 1.96rem;
-  line-height: 0.98;
+  font-size: 1.71rem;
+  line-height: 1.0;
+  text-align: center;
 }
 
 .heroSubtitle,
@@ -72,75 +97,64 @@
 }
 
 .heroVisual {
+  flex: 1;
+  min-height: 280px;
   position: relative;
-  height: var(--hero-landscape-height);
-  margin-top: clamp(18px, 5vw, 26px);
+  margin-top: clamp(8px, 2vw, 14px);
 }
 
 .heroSun {
   position: absolute;
-  left: 50%;
-  top: 52px;
+  inset-inline: 0;
+  margin-inline: auto;
+  top: 40px;
   z-index: 1;
   width: 248px;
   height: 248px;
-  transform: translateX(-50%);
   border-radius: 50%;
   background: radial-gradient(circle at 30% 28%, #ffd95d 0%, #ffc400 62%, #f4ab00 100%);
 }
 
+/*
+ * heroLandscape is now a raw <img> positioned relative to the hero section.
+ * Full natural height (height: auto) at 100vw width so the mountains fill
+ * the viewport bottom and the water reflection bleeds into the next section.
+ */
 .heroLandscape {
   position: absolute;
+  /* start ~38% down the hero so half-mountains are in viewport */
+  top: 38%;
   left: 50%;
-  bottom: 0;
+  transform: translateX(-50%);
   z-index: 3;
   width: 100vw;
-  height: var(--hero-landscape-height);
-  transform: translateX(-50%);
+  height: auto;
+  display: block;
+  pointer-events: none;
 }
 
-.heroLandscape::after {
-  content: none;
-}
-
-.landscapeBase,
 .closingLandscapeImage {
   object-fit: cover;
 }
 
-.landscapeBase {
-  object-fit: contain;
-  object-position: center bottom;
+.phonePositioner {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  z-index: 2;
 }
 
 .phoneFrame {
-  position: absolute;
-  left: 50%;
-  top: 42.009326%;
-  z-index: 2;
+  position: relative;
   width: var(--hero-phone-width);
   height: var(--hero-phone-height);
-  transform: translate(-50%, calc(var(--hero-phone-height) * -1 * var(--hero-phone-lift) / 100));
-  border: clamp(5px, calc(var(--hero-phone-width) * 0.0345), 6px) solid #101710;
-  border-radius: clamp(28px, calc(var(--hero-phone-width) * 0.1954), 34px);
+  /* horizontal centre only — hills cover lower half visually */
+  transform: translate(-50%, 0);
   overflow: hidden;
-  background: #0f2216;
-  box-shadow:
-    0 20px 48px rgba(0, 0, 0, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  animation: device-float 4.4s ease-in-out infinite;
 }
 
 .phoneSpeaker {
-  position: absolute;
-  left: 50%;
-  top: clamp(8px, calc(var(--hero-phone-width) * 0.0575), 10px);
-  z-index: 2;
-  width: clamp(56px, calc(var(--hero-phone-width) * 0.4023), 70px);
-  height: clamp(10px, calc(var(--hero-phone-width) * 0.069), 12px);
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: rgba(14, 24, 14, 0.95);
+  display: none;
 }
 
 .phoneScreen {
@@ -148,8 +162,24 @@
   object-position: center top;
 }
 
+/* ── Problem section — white card that slides over the pinned hero ── */
 .problemSection {
-  padding: 32px 16px 10px;
+  position: relative;
+  z-index: 2;                        /* above heroWrapper */
+  background: #ffffff;
+  margin-top: -28px;                 /* peek 28px into viewport on page load */
+  min-height: 100dvh;                /* enough height to fully cover the hero */
+  padding: 0 0 80px;
+  /* box-shadow removed */
+}
+
+.sectionTag {
+  margin: 0 0 14px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f2a100;
 }
 
 .sectionHeading {
@@ -170,210 +200,338 @@
   margin-top: 12px;
 }
 
+/* ── Problem cards — 2×2 grid ── */
 .problemGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  grid-auto-rows: 160px;
+  gap: 20px;
+  margin: 20px;
 }
 
 .problemCard {
-  position: relative;
-  overflow: hidden;
-  border-radius: 18px;
-  padding: 14px;
-  isolation: isolate;
-  box-shadow: 0 18px 36px rgba(18, 18, 18, 0.12);
-  transition:
-    transform 220ms ease,
-    box-shadow 220ms ease;
-}
-
-.problemCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 24px 44px rgba(18, 18, 18, 0.16);
-}
-
-.large {
-  min-height: 174px;
-}
-
-.compact {
-  min-height: 134px;
-}
-
-.kyc,
-.fund,
-.advisor,
-.tax {
-}
-
-.cardBackground {
-  object-fit: cover;
-}
-
-.cardOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.72) 100%);
-}
-
-.cardContent {
-  position: relative;
-  z-index: 2;
   display: flex;
-  height: 100%;
   flex-direction: column;
   justify-content: space-between;
+  padding: 20px;
+  background: #F7F7F7;
+  border: 1px solid #F2F2F2;
+  border-radius: 16px;
+  text-align: left;
+  overflow: hidden;
+}
+
+.cardIcon {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
 }
 
 .cardTitle {
   margin: 0;
-  max-width: 10ch;
-  font-family: var(--font-display), sans-serif;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  line-height: 1.08;
-  white-space: pre-line;
-  color: #ffffff;
+  line-height: 1.25;
+  color: #121212;
 }
 
-.cardDescription {
+.cardDesc {
   margin: 0;
-  max-width: 14.3ch;
-  font-size: 0.62rem;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: #6b7280;
 }
 
-.compact .cardTitle {
-  font-size: 0.92rem;
-}
-
-.compact .cardDescription {
-  font-size: 0.56rem;
-  max-width: 17.4ch;
-}
-
-.advisor .cardDescription,
-.tax .cardDescription {
-  max-width: 18ch;
-}
-
-.paperStack {
-  position: absolute;
-  right: 10px;
-  bottom: 14px;
-  z-index: 2;
-  width: 102px;
-  transform: rotate(-7deg);
-  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.18));
-}
-
-.paperImage {
+/* ══════════════════════════════════════════════════════════
+   Calculator section — 1200 × 900 desktop design
+   bg.svg supplies the golden ellipse, white bg below
+   ══════════════════════════════════════════════════════════ */
+.calcSection {
+  position: relative;
+  z-index: 3;
   width: 100%;
-  height: auto;
+  height: 900px;
+  overflow: hidden;
+  background: #ffffff;
 }
 
-.fundPreview {
+/* bg.svg — fills the entire 1200×900 frame */
+.calcBg {
   position: absolute;
-  right: 10px;
-  bottom: 12px;
-  z-index: 2;
-  width: 124px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.96);
-  padding: 10px;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.fundPreviewHeader {
+/* content wrapper — max-width 1200, centred */
+.calcInner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 48px;
   display: flex;
-  gap: 8px;
+  flex-direction: column;
   align-items: center;
 }
 
-.fundBadge {
-  display: grid;
-  width: 26px;
-  height: 26px;
-  place-items: center;
-  border-radius: 8px;
-  background: linear-gradient(180deg, #fff3bf, #f9cf41);
-  font-size: 0.58rem;
-  font-weight: 700;
-  color: #725300;
+/* ── Top area: heading + subtitle + slider ── */
+.calcTop {
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
-.fundCopy {
+.calcTitle {
+  margin: 0;
+  padding-top: 72px;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 700;
+  font-size: 2.6rem;
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  color: #121212;
+}
+
+.calcTitle span {
+  display: block;
+}
+
+.calcSubtitle {
+  margin: 14px 0 48px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #3d3500;
+}
+
+/* slider row */
+.sliderRow {
   display: flex;
-  min-width: 0;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.sliderLabel {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #121212;
+}
+
+.sliderBadge {
+  display: inline-block;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #121212;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 8px 18px;
+}
+
+/* ── Track + coin thumb ── */
+.sliderTrack {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  margin-bottom: 0;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.sliderFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: #1a2030;
+  pointer-events: none;
+  transition: width 30ms linear;
+}
+
+.coinThumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  cursor: grab;
+  z-index: 2;
+  filter: drop-shadow(0 3px 8px rgba(120, 80, 0, 0.4));
+  transition: left 30ms linear;
+}
+
+.coinThumb:active {
+  cursor: grabbing;
+}
+
+.coinImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ── White result card — ~50 % of 900 px height, centred ── */
+.calcCard {
+  width: 100%;
+  max-width: 750px;
+  height: 460px;                    /* ~50 % of 900 */
+  margin-top: 36px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px 36px 24px;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.12);
+  text-align: left;
+  display: flex;
   flex-direction: column;
 }
 
-.fundCopy strong {
-  font-size: 0.56rem;
-  line-height: 1.2;
-  color: var(--text-primary);
+.resultColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
 }
 
-.fundCopy span,
-.fundStats span {
-  font-size: 0.46rem;
-  color: #8b8b8b;
-}
-
-.fundStats {
+.resultCol {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-top: 10px;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.fundStats strong {
-  font-size: 0.86rem;
+.legendDot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.legendDot[data-variant="black"] {
+  background: #121212;
+}
+
+.legendDot[data-variant="green"] {
+  background: #00a52c;
+}
+
+.legendText {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #6b6b6b;
+}
+
+.resultValue {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--green);
+  letter-spacing: -0.03em;
+  margin-top: 4px;
 }
 
-.fundGraph {
-  position: relative;
+.resultValue[data-variant="black"] {
+  color: #121212;
+}
+
+.resultValue[data-variant="green"] {
+  color: #00a52c;
+}
+
+/* ── Bar chart — fills remaining card space ── */
+.chartBars {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
-  height: 58px;
-  margin-top: 10px;
-  padding-top: 10px;
+  gap: 8px;
+  height: 260px;
 }
 
-.fundGraph::before {
-  content: "";
-  position: absolute;
-  inset: 12px 0 10px;
-  border-bottom: 1px solid rgba(0, 165, 44, 0.12);
-}
-
-.fundGraph span {
-  position: relative;
-  z-index: 1;
+.barGroup {
   flex: 1;
-  min-height: 10px;
-  border-radius: 999px 999px 3px 3px;
-  background: linear-gradient(180deg, rgba(0, 165, 44, 0.35), rgba(0, 165, 44, 0.95));
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  gap: 3px;
+  min-width: 0;
 }
 
-.fundTag {
-  position: absolute;
-  right: 10px;
-  top: 2px;
-  z-index: 2;
-  border-radius: 999px;
-  background: var(--green);
-  padding: 2px 7px;
-  font-size: 0.48rem;
-  font-weight: 700;
-  color: #ffffff;
+.barGreen {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  background: #00a52c;
+  min-height: 3px;
+  transition: height 300ms ease;
 }
 
+.barBlack {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  background: #121212;
+  min-height: 3px;
+  transition: height 300ms ease;
+}
+
+.chartAxis {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 12px;
+  font-size: 0.78rem;
+  color: #8b8b8b;
+  flex-shrink: 0;
+}
+
+/* ── hide old ellipse div (replaced by bg.svg) ── */
+.calcEllipse {
+  display: none;
+}
+
+/* ── Mobile overrides for calc section ── */
+@media (max-width: 768px) {
+  .calcSection {
+    height: auto;
+    min-height: 100dvh;
+  }
+  .calcInner {
+    padding: 0 20px;
+  }
+  .calcTop {
+    max-width: 100%;
+  }
+  .calcTitle {
+    padding-top: 48px;
+    font-size: 1.65rem;
+  }
+  .calcSubtitle {
+    margin: 10px 0 32px;
+    font-size: 0.78rem;
+  }
+  .calcCard {
+    max-width: 100%;
+    height: auto;
+    min-height: 50vh;
+    margin-top: 28px;
+    padding: 24px 20px 16px;
+    margin-bottom: 32px;
+  }
+  .resultValue {
+    font-size: 1.15rem;
+  }
+  .chartBars {
+    height: 200px;
+  }
+}
+
+/* ── (dead code below — kept for reference) ── */
 .growthSection {
   position: relative;
   overflow: hidden;
@@ -729,7 +887,7 @@
   .hero {
     --hero-phone-width: 248px;
     --hero-phone-height: 506px;
-    --hero-phone-lift: 72;
+    --hero-phone-lift: 0;
     padding: 52px 24px 0;
   }
 
@@ -750,7 +908,6 @@
   }
 
   .heroVisual {
-    height: var(--hero-landscape-height);
     margin-top: 28px;
   }
 
@@ -760,44 +917,10 @@
     height: 390px;
   }
 
-  .heroLandscape {
-    width: 100vw;
-    height: var(--hero-landscape-height);
-  }
 
-  .phoneFrame {
-    border-width: 6px;
-    border-radius: 44px;
-  }
-
-  .phoneSpeaker {
-    top: 14px;
-    width: 92px;
-    height: 14px;
-  }
 
   .problemSection {
-    padding: 72px 24px 24px;
-  }
-
-  .sectionHeading {
-    max-width: 760px;
-    margin-bottom: 30px;
-  }
-
-  .sectionHeading h2 {
-    font-size: 3rem;
-  }
-
-  .sectionHeading p {
-    margin-top: 16px;
-    font-size: 1rem;
-  }
-
-  .problemGrid {
-    max-width: 1040px;
-    margin: 0 auto;
-    gap: 18px;
+    padding: 0 0 24px;
   }
 
   .large {
@@ -814,64 +937,29 @@
   }
 
   .cardTitle {
-    font-size: 1.8rem;
+    font-size: 1.52rem;
   }
 
   .cardDescription {
-    max-width: 22ch;
-    font-size: 0.95rem;
+    font-size: 0.88rem;
   }
 
   .compact .cardTitle {
-    font-size: 1.45rem;
+    font-size: 1.2rem;
   }
 
   .compact .cardDescription {
-    max-width: 28ch;
-    font-size: 0.86rem;
+    font-size: 0.8rem;
   }
 
-  .paperStack {
-    right: 24px;
-    bottom: 18px;
-    width: 150px;
+  .cardIcon {
+    width: 100px;
+    height: 100px;
   }
 
-  .fundPreview {
-    right: 20px;
-    bottom: 20px;
-    width: 220px;
-    border-radius: 20px;
-    padding: 16px;
-  }
-
-  .fundBadge {
-    width: 42px;
-    height: 42px;
-    font-size: 0.9rem;
-  }
-
-  .fundCopy strong {
-    font-size: 0.92rem;
-  }
-
-  .fundCopy span,
-  .fundStats span {
-    font-size: 0.72rem;
-  }
-
-  .fundStats strong {
-    font-size: 1.45rem;
-  }
-
-  .fundGraph {
-    height: 90px;
-    margin-top: 14px;
-  }
-
-  .fundTag {
-    padding: 4px 10px;
-    font-size: 0.7rem;
+  .compact .cardIcon {
+    width: 78px;
+    height: 78px;
   }
 
   .growthSection {
@@ -1055,86 +1143,63 @@
 
 @media (min-width: 1200px) {
   .hero {
-    --hero-phone-width: 318px;
-    --hero-phone-height: 646px;
-    --hero-phone-lift: 75;
-    padding-top: 56px;
+    /* phone reduced — 220 px wide, aspect-correct height */
+    --hero-phone-width: 220px;
+    --hero-phone-height: 450px;
+    --hero-phone-lift: 0;
+    height: calc(100dvh - 56px);
+    min-height: 640px;
+    padding-top: 48px;
   }
 
   .heroTitle {
-    font-size: 4.65rem;
+    font-size: 4.4rem;
+  }
+
+  .heroCopy {
+    max-width: 900px;
   }
 
   .heroSubtitle {
     font-size: 1.25rem;
   }
 
-  .heroVisual {
-    height: var(--hero-landscape-height);
-  }
+  /* heroVisual: flex:1 already set in base — no height override needed */
 
   .heroSun {
-    top: 96px;
+    top: 80px;
     width: clamp(636px, 50.25vw, 760px);
     height: clamp(636px, 50.25vw, 760px);
   }
 
   .heroLandscape {
+    /*
+     * fg.png has hills starting at ~30% of image height (≈ 278 px into the 926 px image).
+     * We want hills to align with the phone centre (≈ 605 px from viewport).
+     * → landscape top = 605 – 278 = 327 px from viewport = ~32% of hero height.
+     * Sky zone (top 30% of image) is transparent, so phone's upper half shows through.
+     * Landscape bleeds ~335 px below the hero into the next section.
+     */
+    top: 32%;
     width: 100vw;
-    height: var(--hero-landscape-height);
+    height: auto;
+  }
+
+  /*
+   * Phone top at 10% of heroVisual (≈ 380 px from viewport).
+   * Phone centre at 380+225 = 605 px = landscape top → upper half clear, lower behind hills.
+   */
+  .phonePositioner {
+    top: 10%;
+    bottom: auto;
   }
 
   .phoneFrame {
-    border-width: 7px;
-    border-radius: 50px;
-  }
-
-  .phoneSpeaker {
-    top: 16px;
-    width: 112px;
-    height: 15px;
+    transform: translate(-50%, 0);
   }
 
   .problemSection {
-    padding-top: 86px;
-  }
-
-  .sectionHeading h2 {
-    font-size: 3.4rem;
-  }
-
-  .problemGrid {
-    grid-template-columns: 335px minmax(0, 1fr);
-    grid-template-rows: 449px 244px;
-    gap: 20px;
-  }
-
-  .kyc {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .fund {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .advisor {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .tax {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .large {
-    min-height: auto;
-  }
-
-  .compact {
-    min-height: auto;
+    padding: 0 0 120px;
   }
 
   .growthSection {

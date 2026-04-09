@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
+import { SimpleHeader } from "@/components/ui/simple-header";
 
 const displayFont = Manrope({
   variable: "--font-display",
@@ -26,7 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
-      <body>{children}</body>
+      <body>
+        <SimpleHeader />
+        {children}
+      </body>
     </html>
   );
 }
