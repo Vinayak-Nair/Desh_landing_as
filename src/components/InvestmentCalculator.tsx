@@ -1,36 +1,22 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { motion, useInView } from "motion/react";
 import Image from "next/image";
 import { BlurredStagger } from "@/components/ui/blurred-stagger-text";
 
-const chartData = [
-  { savings: 8, investing: 4 },
-  { savings: 10, investing: 6 },
-  { savings: 12, investing: 8 },
-  { savings: 14, investing: 10 },
-  { savings: 16, investing: 13 },
-  { savings: 18, investing: 16 },
-  { savings: 20, investing: 20 },
-  { savings: 23, investing: 25 },
-  { savings: 26, investing: 31 },
-  { savings: 29, investing: 38 },
-  { savings: 33, investing: 46 },
-  { savings: 37, investing: 56 },
-  { savings: 42, investing: 67 },
-  { savings: 47, investing: 80 },
-  { savings: 53, investing: 95 },
-  { savings: 60, investing: 112 },
-  { savings: 68, investing: 132 },
-  { savings: 77, investing: 155 },
-  { savings: 87, investing: 181 },
-  { savings: 100, investing: 210 },
-];
+/* ── Financial constants (ported from reference wealth-slider.js) ── */
+const DEFAULT_SAVINGS_RATE = 0.0007; // ~0.84% annual (typical savings account)
+const INVESTING_RATE = 0.07;          // 7% annual (normal investing)
+const YEARS = 30;
+const GRAPH_HEADROOM_MULTIPLIER = 1.03;
 
-const MIN_RATE = 1;
-const MAX_RATE = 20;
-const DEFAULT_RATE = 8;
+const MIN_DEPOSIT = 5000;
+const MAX_DEPOSIT = 200000;
+const DEFAULT_DEPOSIT = 5000;
+const STEP = 1000;
+
+/* ── Helpers ── */
 
 function formatINR(value: number): string {
   const str = Math.round(value).toString();
@@ -41,33 +27,56 @@ function formatINR(value: number): string {
   return "\u20B9" + formatted;
 }
 
-function calculateValues(rate: number) {
-  const principal = 10000;
-  const years = 30;
-  const savingsRate = 0.035;
-  const investingRate = rate / 100;
-  const savings = principal * Math.pow(1 + savingsRate, years);
-  const investing = principal * Math.pow(1 + investingRate, years);
+/** Future value of an annuity-due (monthly deposits, annual rate, N years) */
+function calculateFutureValue(
+  monthlyDeposit: number,
+  annualRate: number,
+  years: number
+): number {
+  const periods = 12 * years;
+  const monthlyRate = Math.pow(1 + annualRate, 1 / 12) - 1;
+  return Math.round(
+    monthlyDeposit *
+      ((Math.pow(1 + monthlyRate, periods) - 1) / monthlyRate) *
+      (1 + monthlyRate)
+  );
+}
+
+/** Generate year-by-year series for a given monthly deposit + annual rate */
+function calculateSeries(monthlyDeposit: number, annualRate: number) {
+  const yearlyTotals: number[] = [];
+  for (let year = 1; year <= YEARS; year++) {
+    yearlyTotals.push(calculateFutureValue(monthlyDeposit, annualRate, year));
+  }
   return {
-    savings: Math.round(savings),
-    investing: Math.round(investing),
-    total: Math.round(savings + investing),
+    totalValue: yearlyTotals[yearlyTotals.length - 1] ?? 0,
+    years: yearlyTotals,
   };
 }
 
+const GRAPH_CEILING =
+  calculateSeries(MAX_DEPOSIT, INVESTING_RATE).totalValue *
+  GRAPH_HEADROOM_MULTIPLIER;
+
 export function InvestmentCalculator() {
-  const [sliderValue, setSliderValue] = useState(DEFAULT_RATE);
+  const [monthlyDeposit, setMonthlyDeposit] = useState(DEFAULT_DEPOSIT);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
-  const { savings, investing, total } = calculateValues(sliderValue);
+  /* ── Derived data ── */
+  const savingsResult = useMemo(
+    () => calculateSeries(monthlyDeposit, DEFAULT_SAVINGS_RATE),
+    [monthlyDeposit]
+  );
+  const investingResult = useMemo(
+    () => calculateSeries(monthlyDeposit, INVESTING_RATE),
+    [monthlyDeposit]
+  );
+
+  const graphCeiling = Math.max(GRAPH_CEILING, 1);
 
   const sliderPercent =
-    ((sliderValue - MIN_RATE) / (MAX_RATE - MIN_RATE)) * 100;
-
-  const maxBarValue = Math.max(
-    ...chartData.map((d) => d.savings + d.investing)
-  );
+    ((monthlyDeposit - MIN_DEPOSIT) / (MAX_DEPOSIT - MIN_DEPOSIT)) * 100;
 
   return (
     <section
@@ -116,11 +125,11 @@ export function InvestmentCalculator() {
             {/* Label row */}
             <div className="flex items-center justify-between relative self-stretch w-full">
               <div className="font-['General_Sans'] font-medium text-black text-sm md:text-base text-center tracking-[0] leading-[19.2px] whitespace-nowrap">
-                Expected return rate (p.a)
+                Monthly deposit
               </div>
               <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2.5 bg-[#e8b200] rounded-lg">
                 <div className="font-['General_Sans'] font-semibold text-black text-sm md:text-base text-center tracking-[0] leading-6 whitespace-nowrap">
-                  {formatINR(total)}
+                  {formatINR(monthlyDeposit)}
                 </div>
               </div>
             </div>
@@ -136,28 +145,29 @@ export function InvestmentCalculator() {
               </div>
               {/* Coin — vertically centred on the track, pointer-events-none so input below receives clicks */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 pointer-events-none z-20"
-                style={{ left: `calc(${sliderPercent}% - 20px)` }}
+                className="absolute top-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
+                style={{ left: `${sliderPercent}%` }}
               >
                 <Image
                   src="/figma/slider-coin.png"
                   alt="Drag to adjust"
                   width={40}
                   height={40}
+                  sizes="40px"
                   draggable={false}
-                  className="rounded-full"
+                  className="w-10 h-10 max-w-none rounded-full"
                 />
               </div>
               {/* Range input — must be on top (z-30) to capture all pointer events */}
               <input
                 type="range"
-                min={MIN_RATE}
-                max={MAX_RATE}
-                step={0.1}
-                value={sliderValue}
-                onChange={(e) => setSliderValue(parseFloat(e.target.value))}
+                min={MIN_DEPOSIT}
+                max={MAX_DEPOSIT}
+                step={STEP}
+                value={monthlyDeposit}
+                onChange={(e) => setMonthlyDeposit(parseFloat(e.target.value))}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"
-                aria-label="Expected return rate per annum"
+                aria-label="Monthly deposit amount"
               />
             </div>
           </div>
@@ -176,7 +186,7 @@ export function InvestmentCalculator() {
                   </p>
                 </div>
                 <div className="self-stretch font-['General_Sans'] font-medium text-black text-xl md:text-2xl tracking-[0] leading-9">
-                  {formatINR(savings)}
+                  {formatINR(savingsResult.totalValue)}
                 </div>
               </div>
 
@@ -190,40 +200,39 @@ export function InvestmentCalculator() {
                   </p>
                 </div>
                 <div className="self-stretch font-['General_Sans'] font-medium text-black text-xl md:text-2xl tracking-[0] leading-9">
-                  {formatINR(investing)}
+                  {formatINR(investingResult.totalValue)}
                 </div>
               </div>
             </div>
 
-            {/* Bar chart */}
-            <div className="relative self-stretch w-full h-[200px] md:h-[240px]">
+            {/* Bar chart — 30 bars (one per year), each bar is a column
+                 with green (extra investing growth) on top and black (savings) on bottom */}
+            <div className="relative self-stretch w-full h-[225px] md:h-[270px]">
               <div className="flex items-end justify-between w-full h-full gap-[3px]">
-                {chartData.map((bar, index) => {
-                  const totalBarValue = bar.savings + bar.investing;
-                  const totalHeightPercent =
-                    (totalBarValue / maxBarValue) * 100;
-                  const savingsHeightPercent =
-                    (bar.savings / totalBarValue) * 100;
-                  const investingHeightPercent =
-                    (bar.investing / totalBarValue) * 100;
+                {savingsResult.years.map((_, yearIndex) => {
+                  const savVal = savingsResult.years[yearIndex];
+                  const invVal = investingResult.years[yearIndex];
+                  const extraInvestingGrowth = Math.max(invVal - savVal, 0);
+
+                  // The stacked height equals the investing result, with savings as the baseline.
+                  const savH = (savVal / graphCeiling) * 100;
+                  const invH = (extraInvestingGrowth / graphCeiling) * 100;
+
                   return (
                     <div
-                      key={index}
+                      key={yearIndex}
                       className="flex flex-col justify-end flex-1 h-full"
                     >
+                      {/* Green (investing) bar */}
                       <div
-                        className="flex flex-col w-full rounded-sm overflow-hidden transition-all duration-300"
-                        style={{ height: `${totalHeightPercent}%` }}
-                      >
-                        <div
-                          className="w-full bg-[#008a25]"
-                          style={{ height: `${investingHeightPercent}%` }}
-                        />
-                        <div
-                          className="w-full bg-black"
-                          style={{ height: `${savingsHeightPercent}%` }}
-                        />
-                      </div>
+                        className="w-full bg-[#008a25] rounded-t-sm transition-all duration-300"
+                        style={{ height: `${invH}%` }}
+                      />
+                      {/* Black (savings) bar */}
+                      <div
+                        className="w-full bg-black transition-all duration-300"
+                        style={{ height: `${savH}%` }}
+                      />
                     </div>
                   );
                 })}
