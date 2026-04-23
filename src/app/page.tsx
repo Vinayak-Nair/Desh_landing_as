@@ -2,6 +2,7 @@ import styles from "./page.module.css";
 import { HeroSection } from "@/components/HeroSection";
 import { InvestmentCalculator } from "@/components/InvestmentCalculator";
 import { ProblemSection } from "@/components/ProblemSection";
+import { ProblemSectionWrapper } from "@/components/ProblemSectionWrapper";
 import { CTASection } from "@/components/CTASection";
 import { QuoteSection } from "@/components/QuoteSection";
 import { FooterSection } from "@/components/FooterSection";
@@ -17,9 +18,9 @@ export default function Home() {
         </div>
 
         {/* Second section — white card that slides over the hero */}
-        <section className={styles.problemSection}>
+        <ProblemSectionWrapper>
           <ProblemSection />
-        </section>
+        </ProblemSectionWrapper>
 
       </div>
 
