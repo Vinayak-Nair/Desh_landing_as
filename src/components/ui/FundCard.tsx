@@ -34,7 +34,13 @@ export function FundCard({ delay }: { delay: number }) {
         <div className={styles.fundPreview}>
           <div className={styles.fundPreviewHeader}>
             <div className={styles.fundBadge}>
-              <svg
+              <img
+                src="/figma/funds-box-paragh.png"
+                alt=""
+                className={styles.fundBadgeIcon}
+              />
+
+              {/* <svg
                 viewBox="0 0 49 49"
                 className={styles.fundBadgeIcon}
                 aria-hidden="true"
@@ -60,11 +66,11 @@ export function FundCard({ delay }: { delay: number }) {
                   strokeLinejoin="round"
                   strokeWidth="3"
                 />
-              </svg>
+              </svg> */}
             </div>
             <div className={styles.fundCopy}>
-              <strong>Parag Parikh Flexi</strong>
-              <strong>Cap Fund</strong>
+              <p>Parag Parikh Flexi</p>
+              <p>Cap Fund</p>
             </div>
           </div>
           <div className={styles.fundMeta}>
@@ -77,38 +83,11 @@ export function FundCard({ delay }: { delay: number }) {
             <span>3Y Annualised</span>
           </div>
           <div className={styles.fundGraph}>
-            <svg
-              viewBox="0 0 258 95"
-              preserveAspectRatio="none"
-              className={styles.fundGraphSvg}
-            >
-              <defs>
-                <linearGradient
-                  id="fund-area-gradient"
-                  x1="129"
-                  x2="129"
-                  y1="0"
-                  y2="95"
-                >
-                  <stop offset="0%" stopColor="#AAFFBD" stopOpacity="0.7" />
-                  <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M6 79C16 63 25 68 34 48c8-17 21-23 33-11 6 6 7 20 16 22 12 3 21-7 31-6 13 1 18 11 28 12 7 1 12-3 19-3 14 0 20 8 33 8 13 0 24-5 34 2 8 5 11 14 18 16 20-28 27-69 38-88v95H6Z"
-                fill="url(#fund-area-gradient)"
-              />
-              <path
-                d="M6 79C16 63 25 68 34 48c8-17 21-23 33-11 6 6 7 20 16 22 12 3 21-7 31-6 13 1 18 11 28 12 7 1 12-3 19-3 14 0 20 8 33 8 13 0 24-5 34 2 8 5 11 14 18 16 20-28 27-69 38-88"
-                fill="none"
-                stroke="#00A52C"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3.2"
-              />
-            </svg>
-            <div className={styles.fundTag}>₹234</div>
-            <span className={styles.fundGraphDot} />
+            <img
+              src="/figma/graph.png"
+              alt=""
+              className={styles.fundBadgeIcon}
+            />
           </div>
         </div>
       </div>

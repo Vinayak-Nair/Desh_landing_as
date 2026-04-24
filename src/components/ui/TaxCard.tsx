@@ -7,7 +7,7 @@ import styles from "@/app/page.module.css";
 export function TaxCard({ delay }: { delay: number }) {
   return (
     <motion.article
-      className={`${styles.problemCard} ${styles.compact} ${styles.tax}`}
+      className={`${styles.problemCard} ${styles.compact} ${styles.tax} col-span-4`}
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay, ease: "easeOut" }}
