@@ -176,33 +176,35 @@ export function InvestmentCalculator() {
 
           {/* Result card */}
           <div className="flex flex-col items-start p-4 md:p-6 relative self-stretch w-full bg-white rounded-[14px] shadow-lg">
-            <div className="relative self-stretch w-full h-[280px] md:h-[360px]">
+            <div className="relative self-stretch w-full flex flex-col md:block md:h-[360px]">
               {/* Two-column results */}
-              <div className="absolute top-0 left-0 flex flex-col md:flex-row items-start gap-8 md:gap-16 w-full z-10 pointer-events-none">
+              <div className="flex flex-col md:flex-row items-start gap-4 md:gap-16 w-full z-10 pointer-events-none relative md:absolute md:top-0 md:left-0">
                 {/* Savings column */}
-                <div className="flex flex-col items-start gap-6 relative">
-                  <div className="flex flex-col items-start gap-[13px] relative self-stretch w-full">
-                    <div className="w-6 h-6 mt-[-4px] ml-[-4px] bg-black rounded border-4 border-[#00000033] aspect-square" />
-                    <p className="self-stretch font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-6">
-                      Typical savings account <br />
-                      after 30 years
+                <div className="flex flex-col items-start gap-2 md:gap-6 relative w-full md:w-auto">
+                  <div className="flex flex-row md:flex-col items-center md:items-start gap-3 md:gap-[13px] relative self-stretch w-full">
+                    <div className="w-4 h-4 md:w-6 md:h-6 shrink-0 md:mt-[-4px] md:ml-[-4px] bg-black rounded border-[3px] md:border-4 border-[#00000033] aspect-square" />
+                    <p className="flex-1 font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-tight md:leading-6">
+                      Typical savings account <span className="inline md:hidden">after 30 years</span>
+                      <br className="hidden md:block" />
+                      <span className="hidden md:inline">after 30 years</span>
                     </p>
                   </div>
-                  <div className="self-stretch font-['General_Sans'] font-medium text-black text-xl md:text-2xl tracking-[0] leading-9">
+                  <div className="font-['General_Sans'] font-semibold text-black text-xl md:text-2xl tracking-[0] leading-tight md:leading-9">
                     {formatINR(savingsResult.totalValue)}
                   </div>
                 </div>
 
                 {/* Investing column */}
-                <div className="flex flex-col items-start gap-6 relative">
-                  <div className="flex flex-col items-start gap-[13px] relative self-stretch w-full">
-                    <div className="w-6 h-6 mt-[-4px] ml-[-4px] bg-[#008a25] rounded border-4 border-[#008a2533] aspect-square" />
-                    <p className="self-stretch font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-6">
-                      Normal Investing account <br />
-                      after 30 years
+                <div className="flex flex-col items-start gap-2 md:gap-6 relative w-full md:w-auto">
+                  <div className="flex flex-row md:flex-col items-center md:items-start gap-3 md:gap-[13px] relative self-stretch w-full">
+                    <div className="w-4 h-4 md:w-6 md:h-6 shrink-0 md:mt-[-4px] md:ml-[-4px] bg-[#008a25] rounded border-[3px] md:border-4 border-[#008a2533] aspect-square" />
+                    <p className="flex-1 font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-tight md:leading-6">
+                      Normal Investing account <span className="inline md:hidden">after 30 years</span>
+                      <br className="hidden md:block" />
+                      <span className="hidden md:inline">after 30 years</span>
                     </p>
                   </div>
-                  <div className="self-stretch font-['General_Sans'] font-medium text-black text-xl md:text-2xl tracking-[0] leading-9">
+                  <div className="font-['General_Sans'] font-semibold text-black text-xl md:text-2xl tracking-[0] leading-tight md:leading-9">
                     {formatINR(investingResult.totalValue)}
                   </div>
                 </div>
@@ -210,8 +212,8 @@ export function InvestmentCalculator() {
 
               {/* Bar chart — 30 bars (one per year), each bar is a column
                    with green (extra investing growth) on top and black (savings) on bottom */}
-              <div className="absolute top-[81px] bottom-0 left-0 w-full">
-                <div className="flex items-end justify-between w-full h-full gap-[3px]">
+              <div className="w-full h-[160px] mt-4 md:mt-0 relative md:absolute md:top-[81px] md:bottom-0 md:left-0 md:h-auto">
+                <div className="flex items-end justify-between w-full h-full gap-[2px] md:gap-[3px]">
                 {savingsResult.years.map((_, yearIndex) => {
                   const savVal = savingsResult.years[yearIndex];
                   const invVal = investingResult.years[yearIndex];
