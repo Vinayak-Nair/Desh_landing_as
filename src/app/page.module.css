@@ -24,7 +24,6 @@
   display: flex;
   flex-direction: column;
   /* lock hero height to dvh so heroVisual (flex:1) only responds to viewport height, not width */
-  height: calc(50dvh);
 }
 
 .heroCopy {
@@ -299,7 +298,7 @@
 .fundPreviewStack {
   position: absolute;
   right: 14px;
-  bottom: 14px;
+  bottom: -10px;
   z-index: 3;
 }
 
@@ -315,7 +314,8 @@
   background: #ffffff;
   border-radius: 14px;
   padding: 12px 12px 8px;
-  width: 154px;
+  width: 200px;
+  height: 200px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
@@ -328,8 +328,8 @@
 
 .fundBadge {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border-radius: 7px;
   overflow: hidden;
 }
@@ -356,6 +356,7 @@
   font-size: 0.52rem;
   color: #8b8b8b;
   margin-bottom: 5px;
+  margin-top: 10px;
 }
 
 .fundMetaDot {
@@ -386,6 +387,7 @@
 }
 
 .fundGraph {
+  margin-top: 20px;
   position: relative;
   height: 48px;
 }
@@ -1105,24 +1107,24 @@
     /* 2-column 3:4 grid
        row 1 — kyc(3fr) + fund(4fr)
        row 2 — advisor(3fr) + tax(4fr) equal via explicit placement below */
-    grid-template-columns: 3fr 4fr;
+    /* grid-template-columns: 3fr 4fr; */
     gap: 16px;
   }
 
   /* row 1: natural flow (3fr | 4fr) */
   .kyc {
-    grid-column: 1;
+    grid-column: span 2;
   }
   .fund {
-    grid-column: 2;
+    grid-column: span 3;
   }
 
   /* row 2: swap so advisor takes the wider slot → visually equal feel */
   .advisor {
-    grid-column: 1 / span 1;
+    grid-column: span 1;
   }
   .tax {
-    grid-column: 2 / span 1;
+    grid-column: span 4;
   }
 
   /* height ratio row1:row2 = 2:1, row2 a bit bigger than before */
@@ -1354,12 +1356,9 @@
 
 @media (min-width: 1200px) {
   .hero {
-    /* phone scales proportionally from 220px @ 1200px viewport */
     --hero-phone-width: 19.75vw;
-    /* --hero-phone-height removed: base calc(width * 356/174) gives 450px @ 1200px and scales up */
     --hero-phone-lift: 0;
-    height: calc(100dvh - 56px);
-    min-height: 640px;
+    height: clamp(60vw, 60vw, 85vw);
     padding-top: 48px;
   }
 
@@ -1404,12 +1403,35 @@
   }
 
   .problemSection {
-    padding: 180px 0 10px;
+    padding: 150px 0 10px;
   }
 
   .growthSection {
     padding-top: 150px;
     padding-bottom: 70px;
+  }
+  .problemGrid {
+    display: grid;
+    /* mobile: 2 equal columns */
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px;
+  }
+
+  /* row 1: natural flow (3fr | 4fr) */
+  .kyc {
+    grid-column: span 4;
+  }
+  .fund {
+    grid-column: span 6;
+  }
+
+  /* row 2: swap so advisor takes the wider slot → visually equal feel */
+  .advisor {
+    grid-column: span 5;
+  }
+  .tax {
+    grid-column: span 5;
   }
 
   .growthSection::before {
@@ -1470,13 +1492,7 @@
     grid-column: span 1;
   }
 
-  .large {
-    min-height: 220px;
-  }
-
-  .compact {
-    min-height: 180px;
-  }
+  /* heights set by grid-template-rows above */
 
   /* Fund preview widget: scale down so it doesn't overflow */
   .fundPreview {
@@ -1522,5 +1538,285 @@
   }
   .problemSection {
     margin-top: 0px;
+  }
+}
+
+/* ── Stage: centered composition that scales with viewport ── */
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  max-height: clamp(360px, 70vw, 820px);
+
+  /* Drives all child sizing — grows from 320px to 820px */
+  --stage-size: clamp(320px, 100vw, 2400px);
+}
+
+/* All children share the same grid cell → all anchored at center.
+   No absolute positioning, no transform tricks — Motion animations
+   on x/y compose cleanly because there's no base transform. */
+.stage > .stageLayer {
+  grid-area: 1 / 1;
+  place-self: center;
+  margin-inline-start: var(--offset-x, 0);
+  margin-block-start: var(--offset-y, 0);
+}
+
+/* Layer 1 — sun glow (deepest, largest soft circle) */
+.layerSun {
+  width: calc(var(--stage-size) * 0.45);
+  height: calc(var(--stage-size) * 0.45);
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle at 30% 28%,
+    #ffd95d 0%,
+    #ffc400 62%,
+    #f4ab00 100%
+  );
+  /* filter: blur(6px); */
+  z-index: 2;
+  --offset-x: 0;
+  --offset-y: calc(var(--stage-size) * -0.05);
+}
+
+/* Layer 2 — halo ring sitting between sun and phone */
+.layerHalo {
+  width: calc(var(--stage-size) * 0.55);
+  height: calc(var(--stage-size) * 0.55);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0) 65%
+  );
+  z-index: 1;
+  --offset-x: calc(var(--stage-size) * 0.08); /* right */
+  --offset-y: calc(var(--stage-size) * -0.1);
+}
+
+/* Layer 3 — landscape / horizon image */
+.layerHorizon {
+  width: var(--stage-size);
+  height: auto;
+  object-fit: contain;
+  z-index: 5;
+  pointer-events: none;
+  --offset-y: calc(var(--stage-size) * 0.15);
+}
+
+/* Layer 4 — phone centerpiece (sized by aspect ratio) */
+.layerPhone {
+  position: relative;
+  width: calc(var(--stage-size) * 0.39);
+  aspect-ratio: 220 / 440;
+  z-index: 4;
+  --offset-x: 0;
+  --offset-y: calc(var(--stage-size) * -0.2);
+}
+
+.layerPhoneImage {
+  object-fit: contain;
+}
+
+/* Layer 5 — foreground accent (floating card / badge slot) */
+.layerCloudRight {
+  width: calc(var(--stage-size) * 0.12);
+  height: calc(var(--stage-size) * 0.06);
+  /* border-radius: 14px; */
+  /* background: rgba(255, 255, 255, 0.9); */
+  /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
+  /* Nudge it off-center so it reads as foreground, not stacked dead-center */
+  transform: translate(35%, 60%);
+  z-index: 3;
+  --offset-x: calc(var(--stage-size) * 0.35); /* right */
+  --offset-y: calc(var(--stage-size) * -0.28);
+}
+
+.layerCloudLeft {
+  width: calc(var(--stage-size) * 0.12);
+  height: calc(var(--stage-size) * 0.06);
+  /* border-radius: 14px; */
+  /* background: rgba(255, 255, 255, 0.9); */
+  /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
+  /* Nudge it off-center so it reads as foreground, not stacked dead-center */
+  transform: translate(35%, 60%);
+  z-index: 3;
+  --offset-x: calc(var(--stage-size) * -0.35); /* right */
+  --offset-y: calc(var(--stage-size) * -0.28);
+}
+
+@media (max-width: 480px) {
+  /* ── Stage: centered composition that scales with viewport ── */
+  .stage {
+  }
+
+  /* Layer 1 — sun glow (deepest, largest soft circle) */
+  .layerSun {
+    display: none;
+  }
+
+  /* Layer 2 — halo ring sitting between sun and phone */
+  .layerHalo {
+    display: none;
+    width: calc(var(--stage-size) * 0.55);
+    height: calc(var(--stage-size) * 0.55);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0) 65%
+    );
+    z-index: 1;
+    --offset-x: calc(var(--stage-size) * 0.08); /* right */
+    --offset-y: calc(var(--stage-size) * -0.1);
+  }
+
+  /* Layer 3 — landscape / horizon image */
+  .layerHorizon {
+    width: var(--stage-size);
+    /* height: calc(50vh); */
+    object-fit: contain;
+    z-index: 5;
+    pointer-events: none;
+    --offset-y: calc(var(--stage-size) * 0.15);
+  }
+
+  /* Layer 4 — phone centerpiece (sized by aspect ratio) */
+  .layerPhone {
+    position: relative;
+    aspect-ratio: 220 / 440;
+    width: 320px;
+    z-index: 4;
+    --offset-x: 0;
+    --offset-y: calc(var(--stage-size) * -0.2);
+  }
+
+  .layerPhoneImage {
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 768px) {
+  .layerSun {
+    display: none;
+  }
+  /* Layer 2 — halo ring sitting between sun and phone */
+
+  /* Layer 3 — landscape / horizon image */
+  .layerHorizon {
+    width: var(--stage-size);
+    /* height: calc(50vh); */
+    object-fit: contain;
+    z-index: 5;
+    pointer-events: none;
+    --offset-y: calc(var(--stage-size) * 0.15);
+  }
+
+  /* Layer 4 — phone centerpiece (sized by aspect ratio) */
+  .layerPhone {
+    position: relative;
+    aspect-ratio: 220 / 440;
+    width: 320px;
+    z-index: 4;
+    --offset-x: 0;
+    /* --offset-y: calc(var(--stage-size) * -0.2); */
+  }
+
+  .layerPhoneImage {
+    object-fit: contain;
+  }
+}
+
+@media (min-width: 768px) {
+  .stage {
+    height: calc(75vh);
+    max-height: unset;
+  }
+  .layerSun {
+    width: 0;
+  }
+  /* Layer 2 — halo ring sitting between sun and phone */
+
+  /* Layer 3 — landscape / horizon image */
+  .layerHorizon {
+    width: var(--stage-size);
+    /* height: calc(50vh); */
+    object-fit: contain;
+    z-index: 5;
+    pointer-events: none;
+    --offset-y: 250px;
+  }
+
+  /* Layer 4 — phone centerpiece (sized by aspect ratio) */
+  .layerPhone {
+    position: relative;
+    aspect-ratio: 220 / 440;
+    width: 320px;
+    z-index: 4;
+    --offset-x: 0;
+    --offset-y: -150px;
+  }
+
+  .layerPhoneImage {
+    object-fit: contain;
+  }
+}
+
+@media (min-width: 1200px) {
+  .layerSun {
+    width: calc(var(--stage-size) * 0.45);
+  }
+  /* Layer 3 — landscape / horizon image */
+  .layerHorizon {
+    width: var(--stage-size);
+    height: auto;
+    object-fit: contain;
+    z-index: 5;
+    pointer-events: none;
+    --offset-y: calc(var(--stage-size) * 0.15);
+  }
+
+  /* Layer 4 — phone centerpiece (sized by aspect ratio) */
+  .layerPhone {
+    position: relative;
+    width: calc(var(--stage-size) * 0.39);
+    aspect-ratio: 220 / 440;
+    z-index: 4;
+    --offset-x: 0;
+    --offset-y: calc(var(--stage-size) * -0.2);
+  }
+
+  .layerPhoneImage {
+    object-fit: contain;
+  }
+
+  /* Layer 5 — foreground accent (floating card / badge slot) */
+  .layerCloudRight {
+    width: calc(var(--stage-size) * 0.12);
+    height: calc(var(--stage-size) * 0.06);
+    /* border-radius: 14px; */
+    /* background: rgba(255, 255, 255, 0.9); */
+    /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
+    /* Nudge it off-center so it reads as foreground, not stacked dead-center */
+    transform: translate(35%, 60%);
+    z-index: 3;
+    --offset-x: calc(var(--stage-size) * 0.35); /* right */
+    --offset-y: calc(var(--stage-size) * -0.28);
+  }
+
+  .layerCloudLeft {
+    width: calc(var(--stage-size) * 0.12);
+    height: calc(var(--stage-size) * 0.06);
+    /* border-radius: 14px; */
+    /* background: rgba(255, 255, 255, 0.9); */
+    /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
+    /* Nudge it off-center so it reads as foreground, not stacked dead-center */
+    transform: translate(35%, 60%);
+    z-index: 3;
+    --offset-x: calc(var(--stage-size) * -0.35); /* right */
+    --offset-y: calc(var(--stage-size) * -0.28);
   }
 }

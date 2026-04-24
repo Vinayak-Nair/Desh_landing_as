@@ -58,9 +58,10 @@ export function HeroSection() {
           </motion.p>
         </div>
 
-        <div className={styles.heroVisual}>
+        <div className={styles.stage}>
+          {/* Layer 1 — ambient sun glow (deepest) */}
           <motion.div
-            className={styles.heroSun}
+            className={`${styles.stageLayer} ${styles.layerSun}`}
             aria-hidden="true"
             initial={{ scale: 0.65, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -70,29 +71,68 @@ export function HeroSection() {
               delay: 0.3,
             }}
           />
-          <motion.div
-            className={styles.phonePositioner}
-            initial={{ y: 100, opacity: 0 }}
-            animate={phoneControls}
-          >
-            <motion.div className={styles.phoneFrame} style={{ x: "-50%" }}>
-              <iframe
-                src="https://asset-animator-vinayakvnair08.replit.app/wealth-hero/"
-                title="Desh mobile app preview"
-                className={styles.phoneScreen}
-                scrolling="no"
-                style={{ border: "none", width: "100%", height: "100%" }}
-              />
-            </motion.div>
-          </motion.div>
 
+          {/* Layer 2 — soft halo ring behind the phone */}
+          <motion.div
+            className={`${styles.stageLayer} ${styles.layerHalo}`}
+            aria-hidden="true"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.4, delay: 0.5, ease: "easeOut" }}
+          />
+
+          {/* Layer 3 — landscape / horizon backdrop */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/figma/fg.png"
             alt=""
             aria-hidden="true"
-            className={styles.heroLandscape}
+            className={`${styles.stageLayer} ${styles.layerHorizon}`}
           />
+
+          {/* Layer 4 — phone centerpiece */}
+          <motion.div
+            className={`${styles.stageLayer} ${styles.layerPhone}`}
+            initial={{ y: 100, opacity: 0 }}
+            animate={phoneControls}
+          >
+            <iframe
+              src="https://asset-animator-vinayakvnair08.replit.app/wealth-hero/"
+              title="Desh mobile app preview"
+              className={styles.phoneScreen}
+              scrolling="no"
+              style={{ border: "none", width: "100%", height: "100%" }}
+            />
+          </motion.div>
+
+          <motion.div
+            className={`${styles.stageLayer} ${styles.layerCloudRight}`}
+            aria-hidden="true"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 1.4, ease: "easeOut" }}
+          >
+            <img
+              src="/figma/colud.png"
+              alt=""
+              aria-hidden="true"
+              className={`${styles.stageLayer} ${styles.layerHorizon}`}
+            />
+          </motion.div>
+          <motion.div
+            className={`${styles.stageLayer} ${styles.layerCloudLeft}`}
+            aria-hidden="true"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 1.4, ease: "easeOut" }}
+          >
+            <img
+              src="/figma/colud.png"
+              alt=""
+              aria-hidden="true"
+              className={`${styles.stageLayer} ${styles.layerHorizon}`}
+            />
+          </motion.div>
         </div>
       </section>
 
@@ -102,7 +142,7 @@ export function HeroSection() {
           ref={cardsRef}
           className="flex flex-col w-full max-w-[1200px] mx-auto items-center px-4 md:px-6"
         >
-          <div className="flex flex-col items-center gap-3 md:gap-4 pt-10 md:pt-[72px]">
+          <div className="flex flex-col items-center gap-3 md:gap-4 pt-10">
             {isInView && (
               <motion.p
                 className="font-['General_Sans'] font-semibold text-[#f2a100] text-[10px] md:text-xs tracking-[0.14em] uppercase"
