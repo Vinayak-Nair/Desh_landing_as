@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { Sheet, SheetContent, SheetFooter } from '@/components/ui/sheet';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { MenuToggle } from '@/components/ui/menu-toggle';
+import posthog from 'posthog-js';
 
 export function SimpleHeader() {
 	const [open, setOpen] = React.useState(false);
@@ -63,6 +64,9 @@ export function SimpleHeader() {
 							key={link.label}
 							className={buttonVariants({ variant: 'ghost' })}
 							href={link.href}
+							onClick={() => {
+								posthog.capture('book_a_call_clicked', { location: 'header' });
+							}}
 							{...(link.isCal ? {
 								'data-cal-link': "vinayak-nair-vbtd74/1-1-call-with-aswin-investing-from-abroad",
 								'data-cal-config': '{"layout":"month_view"}'
@@ -73,7 +77,10 @@ export function SimpleHeader() {
 					))}
 					<Button 
 						className="ml-2 rounded-[8px] bg-[#121212] px-6 text-white hover:bg-[#2a2a2a]"
-						onClick={() => window.open("https://chat.whatsapp.com/KmasCJMGJ42Bqn9a4PkMw6?mode=gi_t", "_blank", "noopener,noreferrer")}
+						onClick={() => {
+							posthog.capture('whatsapp_community_clicked', { location: 'header' });
+							window.open("https://chat.whatsapp.com/KmasCJMGJ42Bqn9a4PkMw6?mode=gi_t", "_blank", "noopener,noreferrer");
+						}}
 					>
 						Join us
 					</Button>
@@ -103,6 +110,9 @@ export function SimpleHeader() {
 										className: 'justify-start',
 									})}
 									href={link.href}
+									onClick={() => {
+										posthog.capture('book_a_call_clicked', { location: 'header_mobile' });
+									}}
 									{...(link.isCal ? {
 										'data-cal-link': "vinayak-nair-vbtd74/1-1-call-with-aswin-investing-from-abroad",
 										'data-cal-config': '{"layout":"month_view"}'
@@ -115,7 +125,10 @@ export function SimpleHeader() {
 						<SheetFooter>
 							<Button 
 								className="rounded-full bg-[#121212] text-white hover:bg-[#2a2a2a]"
-								onClick={() => window.open("https://chat.whatsapp.com/KmasCJMGJ42Bqn9a4PkMw6?mode=gi_t", "_blank", "noopener,noreferrer")}
+								onClick={() => {
+									posthog.capture('whatsapp_community_clicked', { location: 'header_mobile' });
+									window.open("https://chat.whatsapp.com/KmasCJMGJ42Bqn9a4PkMw6?mode=gi_t", "_blank", "noopener,noreferrer");
+								}}
 							>
 								Join us
 							</Button>
