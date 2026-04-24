@@ -64,8 +64,10 @@ export function CTASection() {
 
           {/* WhatsApp CTA button */}
           {isInView && (
-            <motion.button
-              type="button"
+            <motion.a
+              href="https://chat.whatsapp.com/KmasCJMGJ42Bqn9a4PkMw6?mode=gi_t"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex w-full max-w-[292px] h-[54px] items-center justify-center gap-3 px-6 py-3 bg-[#00ba33] rounded-[999px] border-[3px] border-solid border-[#0ec8411c] shadow-[0px_8px_17px_#054d0d1a,0px_31px_31px_#054d0d17,0px_71px_42px_#054d0d0d,0px_126px_50px_#054d0d03,0px_197px_55px_transparent] cursor-pointer hover:bg-[#00a82e] transition-colors"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -91,7 +93,7 @@ export function CTASection() {
               <span className="font-['General_Sans'] font-semibold text-white text-base tracking-[0] leading-[19.2px] whitespace-nowrap">
                 Join Whatsapp Community
               </span>
-            </motion.button>
+            </motion.a>
           )}
 
           {/* Disclaimer items */}

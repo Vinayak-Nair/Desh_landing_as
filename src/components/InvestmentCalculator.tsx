@@ -81,7 +81,7 @@ export function InvestmentCalculator() {
   return (
     <motion.section
       ref={sectionRef}
-      className="overflow-hidden w-full min-h-[900px] relative mt-16"
+      className="overflow-hidden w-full min-h-[900px] relative mt-0 md:-mt-16 lg:-mt-24"
       initial={{ opacity: 0, y: 60 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
@@ -95,7 +95,7 @@ export function InvestmentCalculator() {
       {/* Content — centred at max 900px to match reduced width */}
       <div className="relative z-10 max-w-[900px] mx-auto flex flex-col items-center px-4 md:px-6 pb-[80px] md:pb-[120px]">
         {/* Heading */}
-        <div className="flex flex-col items-center gap-3 md:gap-4 pt-[100px] md:pt-[140px]">
+        <div className="flex flex-col items-center gap-3 md:gap-4 pt-[180px] md:pt-[260px]">
           <h2 className="font-['General_Sans'] font-medium text-black text-[1.5rem] md:text-[2.5rem] text-center tracking-[-1px] md:tracking-[-2px] leading-[1.15] md:leading-[1.2]">
             {isInView && (
               <>

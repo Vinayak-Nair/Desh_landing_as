@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { SimpleHeader } from "@/components/ui/simple-header";
+import { PHProvider } from "./providers";
+import PostHogPageView from "./PostHogPageView";
 
 const displayFont = Manrope({
   variable: "--font-display",
@@ -27,10 +29,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
-      <body>
-        <SimpleHeader />
-        {children}
-      </body>
+      <PHProvider>
+        <body>
+          <PostHogPageView />
+          <SimpleHeader />
+          {children}
+        </body>
+      </PHProvider>
     </html>
   );
 }
