@@ -1,8 +1,6 @@
 import styles from "./page.module.css";
 import { HeroSection } from "@/components/HeroSection";
 import { InvestmentCalculator } from "@/components/InvestmentCalculator";
-import { ProblemSection } from "@/components/ProblemSection";
-import { ProblemSectionWrapper } from "@/components/ProblemSectionWrapper";
 import { CTASection } from "@/components/CTASection";
 import { QuoteSection } from "@/components/QuoteSection";
 import { FooterSection } from "@/components/FooterSection";
@@ -12,15 +10,8 @@ export default function Home() {
     <main className={styles.page}>
       <div className={styles.shell}>
 
-        {/* Hero — stays pinned while second section scrolls over it */}
-        <div className={styles.heroWrapper}>
-          <HeroSection />
-        </div>
-
-        {/* Second section — white card that slides over the hero */}
-        <ProblemSectionWrapper>
-          <ProblemSection />
-        </ProblemSectionWrapper>
+        {/* Hero + Problem section combined */}
+        <HeroSection />
 
       </div>
 

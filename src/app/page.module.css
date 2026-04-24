@@ -8,19 +8,8 @@
   background: var(--surface);
 }
 
-/* ── Sticky hero wrapper ──────────────────────────────────────
- * Pins the hero flush under the nav (56 px) while the second
- * section scrolls over it.  height = viewport minus nav so the
- * wrapper ends exactly at the viewport bottom — the section
- * peeks 28 px below via its margin-top: -28px.
- * overflow:hidden clips the landscape fg.png bleed.
- * ────────────────────────────────────────────────────────── */
 .heroWrapper {
-  position: sticky;
-  top: 56px; /* stick directly beneath the 56px nav */
-  height: calc(100dvh - 56px); /* fills the remaining viewport */
-  overflow: hidden;
-  z-index: 1;
+  width: 100%;
 }
 
 .hero {
@@ -105,7 +94,6 @@
   margin-top: clamp(8px, 2vw, 14px);
 }
 
-
 .heroSun {
   position: absolute;
   inset-inline: 0;
@@ -124,14 +112,14 @@
 }
 
 /*
- * heroLandscape is now a raw <img> positioned relative to the hero section.
- * Full natural height (height: auto) at 100vw width so the mountains fill
- * the viewport bottom and the water reflection bleeds into the next section.
+ * heroLandscape sits inside heroVisual (position:relative).
+ * top = phonePositioner top% + half phone height → landscape midline
+ * aligns with the phone screen centre.
  */
 .heroLandscape {
   position: absolute;
-  /* start ~38% down the hero so half-mountains are in viewport */
-  top: 38%;
+  /* 42% = phonePositioner top inside heroVisual; + half phone height = phone centre */
+  top: calc(42% + var(--hero-phone-height) / 2);
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
@@ -170,14 +158,13 @@
   object-position: center top;
 }
 
-/* ── Problem section — white card that slides over the pinned hero ── */
+/* ── Problem section ── */
 .problemSection {
-  position: relative;
-  z-index: 2; /* above heroWrapper */
-  /* background driven by ProblemSectionWrapper scroll logic */
-  margin-top: -28px; /* peek 28px into viewport on page load */
-  min-height: 70dvh; /* enough height to fully cover the hero */
+  /* background: #ffffff; */
   padding: 0 0 80px;
+  margin-top: 100px;
+  position: relative;
+  z-index: 999;
 }
 
 .sectionTag {
@@ -247,6 +234,8 @@
   object-fit: cover;
   object-position: center;
   z-index: 0;
+  filter: blur(1px);
+  -webkit-filter: blur(10px); /* For Safari support */
 }
 
 /* Gradient overlay for text readability */
@@ -1395,16 +1384,8 @@
   }
 
   .heroLandscape {
-    /*
-     * fg.png has hills starting at ~30% of image height (≈ 278 px into the 926 px image).
-     * We want hills to align with the phone centre (≈ 605 px from viewport).
-     * → landscape top = 605 – 278 = 327 px from viewport = ~32% of hero height.
-     * Sky zone (top 30% of image) is transparent, so phone's upper half shows through.
-     * Landscape bleeds ~335 px below the hero into the next section.
-     *
-     * Width capped at 1200px — does not grow when viewport widens beyond 1200px.
-     */
-    top: 32%;
+    /* at 1200px+ phonePositioner is top:10% of heroVisual */
+    top: calc(-35% + var(--hero-phone-height) / 2);
     width: 100vw;
     height: auto;
   }
