@@ -9,7 +9,7 @@ import { BlurredStagger } from "@/components/ui/blurred-stagger-text";
 const DEFAULT_SAVINGS_RATE = 0.0007; // ~0.84% annual (typical savings account)
 const INVESTING_RATE = 0.07; // 7% annual (normal investing)
 const YEARS = 30;
-const GRAPH_HEADROOM_MULTIPLIER = 1.03;
+const GRAPH_HEADROOM_MULTIPLIER = 1.00;
 
 const MIN_DEPOSIT = 5000;
 const MAX_DEPOSIT = 200000;
@@ -92,8 +92,8 @@ export function InvestmentCalculator() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Content — centred at max 1040px to match cards grid */}
-      <div className="relative z-10 max-w-[1040px] mx-auto flex flex-col items-center px-4 md:px-6 pb-[80px] md:pb-[120px]">
+      {/* Content — centred at max 900px to match reduced width */}
+      <div className="relative z-10 max-w-[900px] mx-auto flex flex-col items-center px-4 md:px-6 pb-[80px] md:pb-[120px]">
         {/* Heading */}
         <div className="flex flex-col items-center gap-3 md:gap-4 pt-[100px] md:pt-[140px]">
           <h2 className="font-['General_Sans'] font-medium text-black text-[1.5rem] md:text-[2.5rem] text-center tracking-[-1px] md:tracking-[-2px] leading-[1.15] md:leading-[1.2]">
@@ -139,16 +139,16 @@ export function InvestmentCalculator() {
             {/* Slider track + coin */}
             <div className="relative w-full h-[40px]">
               {/* White track bar — vertically centred */}
-              <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[10px] bg-white rounded-[999px] pointer-events-none">
+              <div className="absolute left-[6px] right-[6px] top-1/2 -translate-y-1/2 h-[10px] bg-white rounded-[999px] pointer-events-none">
                 <div
-                  className="absolute top-0 left-0 h-full bg-[#024d53] rounded-full transition-all duration-150"
-                  style={{ width: `${sliderPercent}%` }}
+                  className="absolute top-0 left-0 h-full bg-[#008a25] rounded-full"
+                  style={{ width: `calc(${sliderPercent}% + ${20 - 0.4 * sliderPercent}px)` }}
                 />
               </div>
               {/* Coin — vertically centred on the track, pointer-events-none so input below receives clicks */}
               <div
                 className="absolute top-1/2 w-10 h-10 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
-                style={{ left: `${sliderPercent}%` }}
+                style={{ left: `calc(${sliderPercent}% + ${20 - 0.4 * sliderPercent}px)` }}
               >
                 <Image
                   src="/figma/slider-coin.png"
@@ -175,42 +175,45 @@ export function InvestmentCalculator() {
           </div>
 
           {/* Result card */}
-          <div className="flex flex-col items-start gap-[21px] p-4 md:p-6 relative self-stretch w-full bg-white rounded-[14px] shadow-lg">
-            {/* Two-column results */}
-            <div className="flex flex-col md:flex-row items-start gap-5 relative self-stretch w-full">
-              {/* Savings column */}
-              <div className="flex flex-col flex-1 items-start gap-6 relative">
-                <div className="flex flex-col items-start gap-[13px] relative self-stretch w-full">
-                  <div className="w-6 h-6 mt-[-4px] ml-[-4px] bg-black rounded border-4 border-[#00000033] aspect-square" />
-                  <p className="self-stretch font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-6">
-                    Typical savings account <br />
-                    after 30 years
-                  </p>
+          <div className="flex flex-col items-start p-4 md:p-6 relative self-stretch w-full bg-white rounded-[14px] shadow-lg">
+            <div className="relative self-stretch w-full flex flex-col md:block md:h-[360px]">
+              {/* Two-column results */}
+              <div className="flex flex-col md:flex-row items-start gap-4 md:gap-16 w-full z-10 pointer-events-none relative md:absolute md:top-0 md:left-0">
+                {/* Savings column */}
+                <div className="flex flex-col items-start gap-2 md:gap-6 relative w-full md:w-auto">
+                  <div className="flex flex-row md:flex-col items-center md:items-start gap-3 md:gap-[13px] relative self-stretch w-full">
+                    <div className="w-4 h-4 md:w-6 md:h-6 shrink-0 md:mt-[-4px] md:ml-[-4px] bg-black rounded border-[3px] md:border-4 border-[#00000033] aspect-square" />
+                    <p className="flex-1 font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-tight md:leading-6">
+                      Typical savings account <span className="inline md:hidden">after 30 years</span>
+                      <br className="hidden md:block" />
+                      <span className="hidden md:inline">after 30 years</span>
+                    </p>
+                  </div>
+                  <div className="font-['General_Sans'] font-semibold text-black text-xl md:text-2xl tracking-[0] leading-tight md:leading-9">
+                    {formatINR(savingsResult.totalValue)}
+                  </div>
                 </div>
-                <div className="self-stretch font-['General_Sans'] font-medium text-black text-xl md:text-2xl tracking-[0] leading-9">
-                  {formatINR(savingsResult.totalValue)}
+
+                {/* Investing column */}
+                <div className="flex flex-col items-start gap-2 md:gap-6 relative w-full md:w-auto">
+                  <div className="flex flex-row md:flex-col items-center md:items-start gap-3 md:gap-[13px] relative self-stretch w-full">
+                    <div className="w-4 h-4 md:w-6 md:h-6 shrink-0 md:mt-[-4px] md:ml-[-4px] bg-[#008a25] rounded border-[3px] md:border-4 border-[#008a2533] aspect-square" />
+                    <p className="flex-1 font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-tight md:leading-6">
+                      Normal Investing account <span className="inline md:hidden">after 30 years</span>
+                      <br className="hidden md:block" />
+                      <span className="hidden md:inline">after 30 years</span>
+                    </p>
+                  </div>
+                  <div className="font-['General_Sans'] font-semibold text-black text-xl md:text-2xl tracking-[0] leading-tight md:leading-9">
+                    {formatINR(investingResult.totalValue)}
+                  </div>
                 </div>
               </div>
 
-              {/* Investing column */}
-              <div className="flex flex-col flex-1 items-start gap-6 relative">
-                <div className="flex flex-col items-start gap-[13px] relative self-stretch w-full">
-                  <div className="w-6 h-6 mt-[-4px] ml-[-4px] bg-[#008a25] rounded border-4 border-[#008a2533] aspect-square" />
-                  <p className="self-stretch font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-6">
-                    Normal Investing account <br />
-                    after 30 years
-                  </p>
-                </div>
-                <div className="self-stretch font-['General_Sans'] font-medium text-black text-xl md:text-2xl tracking-[0] leading-9">
-                  {formatINR(investingResult.totalValue)}
-                </div>
-              </div>
-            </div>
-
-            {/* Bar chart — 30 bars (one per year), each bar is a column
-                 with green (extra investing growth) on top and black (savings) on bottom */}
-            <div className="relative self-stretch w-full h-[225px] md:h-[270px]">
-              <div className="flex items-end justify-between w-full h-full gap-[3px]">
+              {/* Bar chart — 30 bars (one per year), each bar is a column
+                   with green (extra investing growth) on top and black (savings) on bottom */}
+              <div className="w-full h-[160px] mt-4 md:mt-0 relative md:absolute md:top-[81px] md:bottom-0 md:left-0 md:h-auto">
+                <div className="flex items-end justify-between w-full h-full gap-[2px] md:gap-[3px]">
                 {savingsResult.years.map((_, yearIndex) => {
                   const savVal = savingsResult.years[yearIndex];
                   const invVal = investingResult.years[yearIndex];
@@ -227,12 +230,12 @@ export function InvestmentCalculator() {
                     >
                       {/* Green (investing) bar */}
                       <div
-                        className="w-full bg-[#008a25] rounded-t-sm transition-all duration-300"
+                        className="w-full bg-[#008a25] rounded-t-sm transition-all duration-1000 ease-in-out"
                         style={{ height: `${invH}%` }}
                       />
                       {/* Black (savings) bar */}
                       <div
-                        className="w-full bg-black transition-all duration-300"
+                        className="w-full bg-black transition-all duration-1000 ease-in-out"
                         style={{ height: `${savH}%` }}
                       />
                     </div>
@@ -240,9 +243,10 @@ export function InvestmentCalculator() {
                 })}
               </div>
             </div>
+            </div>
 
             {/* Axis labels */}
-            <div className="flex items-center justify-between relative self-stretch w-full">
+            <div className="flex items-center justify-between relative self-stretch w-full mt-[21px]">
               <div className="font-['General_Sans'] font-medium text-black text-sm md:text-base tracking-[0] leading-6 whitespace-nowrap">
                 Today
               </div>
