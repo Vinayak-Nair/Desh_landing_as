@@ -7,13 +7,13 @@ import { BlurredStagger } from "@/components/ui/blurred-stagger-text";
 
 /* ── Financial constants (ported from reference wealth-slider.js) ── */
 const DEFAULT_SAVINGS_RATE = 0.0007; // ~0.84% annual (typical savings account)
-const INVESTING_RATE = 0.07;          // 7% annual (normal investing)
+const INVESTING_RATE = 0.07; // 7% annual (normal investing)
 const YEARS = 30;
 const GRAPH_HEADROOM_MULTIPLIER = 1.03;
 
 const MIN_DEPOSIT = 5000;
 const MAX_DEPOSIT = 200000;
-const DEFAULT_DEPOSIT = 5000;
+const DEFAULT_DEPOSIT = 25000;
 const STEP = 1000;
 
 /* ── Helpers ── */
@@ -31,14 +31,14 @@ function formatINR(value: number): string {
 function calculateFutureValue(
   monthlyDeposit: number,
   annualRate: number,
-  years: number
+  years: number,
 ): number {
   const periods = 12 * years;
   const monthlyRate = Math.pow(1 + annualRate, 1 / 12) - 1;
   return Math.round(
     monthlyDeposit *
       ((Math.pow(1 + monthlyRate, periods) - 1) / monthlyRate) *
-      (1 + monthlyRate)
+      (1 + monthlyRate),
   );
 }
 
@@ -66,11 +66,11 @@ export function InvestmentCalculator() {
   /* ── Derived data ── */
   const savingsResult = useMemo(
     () => calculateSeries(monthlyDeposit, DEFAULT_SAVINGS_RATE),
-    [monthlyDeposit]
+    [monthlyDeposit],
   );
   const investingResult = useMemo(
     () => calculateSeries(monthlyDeposit, INVESTING_RATE),
-    [monthlyDeposit]
+    [monthlyDeposit],
   );
 
   const graphCeiling = Math.max(GRAPH_CEILING, 1);
@@ -79,9 +79,12 @@ export function InvestmentCalculator() {
     ((monthlyDeposit - MIN_DEPOSIT) / (MAX_DEPOSIT - MIN_DEPOSIT)) * 100;
 
   return (
-    <section
+    <motion.section
       ref={sectionRef}
       className="overflow-hidden w-full min-h-[900px] relative mt-16"
+      initial={{ opacity: 0, y: 60 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       style={{
         backgroundImage: "url('/figma/yellowbg.png')",
         backgroundSize: "cover",
@@ -89,7 +92,6 @@ export function InvestmentCalculator() {
         backgroundRepeat: "no-repeat",
       }}
     >
-
       {/* Content — centred at max 1040px to match cards grid */}
       <div className="relative z-10 max-w-[1040px] mx-auto flex flex-col items-center px-4 md:px-6 pb-[80px] md:pb-[120px]">
         {/* Heading */}
@@ -251,6 +253,6 @@ export function InvestmentCalculator() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

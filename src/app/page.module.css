@@ -19,12 +19,12 @@
   position: relative;
   /* visible: landscape bleeds below; phone stays within hero so no overflow issue */
   overflow: visible;
-  padding: 52px 18px 0;
+  padding: 52px 0px 0;
   background: linear-gradient(180deg, #ffefb8 0%, #fff9e8 43%, #ffffff 100%);
   display: flex;
   flex-direction: column;
   /* lock hero height to dvh so heroVisual (flex:1) only responds to viewport height, not width */
-  height: calc(100dvh - 56px);
+  height: calc(50dvh);
 }
 
 .heroCopy {
@@ -162,7 +162,7 @@
 .problemSection {
   /* background: #ffffff; */
   padding: 0 0 80px;
-  margin-top: 100px;
+  margin-top: 40px;
   position: relative;
   z-index: 999;
 }
@@ -1068,7 +1068,7 @@
   .hero {
     --hero-phone-width: 248px;
     --hero-phone-lift: 0;
-    padding: 52px 24px 0;
+    padding: 52px 0 0;
   }
 
   .heroCopy {
@@ -1404,7 +1404,7 @@
   }
 
   .problemSection {
-    padding: 0 0 120px;
+    padding: 0 0 10px;
   }
 
   .growthSection {
@@ -1492,5 +1492,35 @@
   /* Paper image: smaller on tiny screens */
   .paperImage {
     width: clamp(80px, 38vw, 140px);
+  }
+
+  /* Shrink hero to fit content — no full-viewport dead space */
+  .hero {
+    /* height: auto; */
+    min-height: unset;
+    padding-bottom: 0;
+  }
+
+  /* Hide sun on small phones — too large relative to viewport */
+  .heroSun {
+    display: none;
+  }
+
+  /* Move heroVisual and phone up on small screens */
+  .heroVisual {
+    /* min-height: 420px; */
+    overflow: hidden;
+    margin-top: 0;
+  }
+
+  .phonePositioner {
+    top: 5%;
+  }
+  .heroLandscape {
+    top: calc(var(--hero-phone-height) / 3);
+    /* top: 0%; */
+  }
+  .problemSection {
+    margin-top: 0px;
   }
 }
