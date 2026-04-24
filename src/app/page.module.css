@@ -162,7 +162,7 @@
 .problemSection {
   /* background: #ffffff; */
   padding: 0 0 80px;
-  margin-top: 40px;
+  margin-top: 10px;
   position: relative;
   z-index: 999;
 }
@@ -1355,7 +1355,7 @@
 @media (min-width: 1200px) {
   .hero {
     /* phone scales proportionally from 220px @ 1200px viewport */
-    --hero-phone-width: 18.33vw;
+    --hero-phone-width: 19.75vw;
     /* --hero-phone-height removed: base calc(width * 356/174) gives 450px @ 1200px and scales up */
     --hero-phone-lift: 0;
     height: calc(100dvh - 56px);
@@ -1391,11 +1391,11 @@
   }
 
   /*
-   * Phone top at 10% of heroVisual (≈ 380 px from viewport).
+   * Phone top at 20% of heroVisual (≈ 380 px from viewport).
    * Phone centre at 380+225 = 605 px = landscape top → upper half clear, lower behind hills.
    */
   .phonePositioner {
-    top: 10%;
+    top: 5%;
     bottom: auto;
   }
 
@@ -1404,7 +1404,7 @@
   }
 
   .problemSection {
-    padding: 0 0 10px;
+    padding: 180px 0 10px;
   }
 
   .growthSection {
