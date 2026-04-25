@@ -1717,7 +1717,7 @@
     max-height: unset;
   }
   .layerSun {
-    width: 0;
+    width: calc(var(--stage-size) * 0.45);
   }
   /* Layer 2 — halo ring sitting between sun and phone */
 
