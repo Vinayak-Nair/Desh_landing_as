@@ -1648,81 +1648,57 @@
   --offset-y: calc(var(--stage-size) * -0.28);
 }
 
-@media (max-width: 480px) {
-  /* ── Stage: centered composition that scales with viewport ── */
-  .stage {
+@media (max-width: 768px) {
+  /* Clip the phone bottom so it doesn't leak below the landscape */
+  .hero {
+    overflow: hidden;
   }
 
-  /* Layer 1 — sun glow (deepest, largest soft circle) */
+  .stage {
+    overflow: clip;
+  }
+
+  /* Layer 1 — sun glow */
   .layerSun {
     display: none;
   }
 
-  /* Layer 2 — halo ring sitting between sun and phone */
+  /* Layer 2 — halo ring */
   .layerHalo {
     display: none;
-    width: calc(var(--stage-size) * 0.55);
-    height: calc(var(--stage-size) * 0.55);
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.55) 0%,
-      rgba(255, 255, 255, 0) 65%
-    );
-    z-index: 1;
-    --offset-x: calc(var(--stage-size) * 0.08); /* right */
-    --offset-y: calc(var(--stage-size) * -0.1);
   }
 
   /* Layer 3 — landscape / horizon image */
   .layerHorizon {
     width: var(--stage-size);
-    /* height: calc(50vh); */
     object-fit: contain;
     z-index: 5;
     pointer-events: none;
     --offset-y: calc(var(--stage-size) * 0.15);
   }
 
-  /* Layer 4 — phone centerpiece (sized by aspect ratio) */
+  /* Layer 4 — phone: restored to proper phone aspect ratio and
+     proportionally sized to match the desktop appearance.
+     The iframe is rendered at a larger virtual viewport and scaled
+     down so the content looks miniaturized, not zoomed-in. */
   .layerPhone {
     position: relative;
+    width: min(50vw, 200px);
     aspect-ratio: 220 / 440;
-    width: 320px;
+    overflow: hidden;
     z-index: 4;
     --offset-x: 0;
     --offset-y: calc(var(--stage-size) * -0.2);
   }
 
-  .layerPhoneImage {
-    object-fit: contain;
-  }
-}
-
-@media (max-width: 768px) {
-  .layerSun {
-    display: none;
-  }
-  /* Layer 2 — halo ring sitting between sun and phone */
-
-  /* Layer 3 — landscape / horizon image */
-  .layerHorizon {
-    width: var(--stage-size);
-    /* height: calc(50vh); */
-    object-fit: contain;
-    z-index: 5;
-    pointer-events: none;
-    --offset-y: calc(var(--stage-size) * 0.15);
-  }
-
-  /* Layer 4 — phone centerpiece (sized by aspect ratio) */
-  .layerPhone {
-    position: relative;
-    aspect-ratio: 220 / 440;
-    width: 320px;
-    z-index: 4;
-    --offset-x: 0;
-    /* --offset-y: calc(var(--stage-size) * -0.2); */
+  /* Render iframe at ~550px (desktop-like viewport) then scale
+     it down to fit the small phone container. This makes the
+     content look like a miniature phone preview, not full-size. */
+  .phoneScreen {
+    width: 550px !important;
+    height: 1100px !important;
+    transform: scale(0.36);
+    transform-origin: top left;
   }
 
   .layerPhoneImage {
