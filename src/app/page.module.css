@@ -1664,8 +1664,10 @@
   /* Layer 1 — sun glow */
   .layerSun {
     display: block;
-    width: calc(var(--stage-size) * 0.45);
-    height: calc(var(--stage-size) * 0.45);
+    width: 248px;
+    height: 248px;
+    top: 40px;
+    position: absolute;
   }
 
   /* Layer 2 — halo ring */
