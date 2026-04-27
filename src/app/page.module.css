@@ -197,7 +197,7 @@
 .problemGrid {
   display: grid;
   /* mobile: 2 equal columns */
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
   gap: 12px;
   margin: 20px;
 }
@@ -298,7 +298,7 @@
 .fundPreviewStack {
   position: absolute;
   right: 14px;
-  bottom: -10px;
+  bottom: 0px;
   z-index: 3;
 }
 
@@ -311,12 +311,12 @@
 
 .fundPreview {
   position: relative;
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 12px 12px 8px;
-  width: 200px;
-  height: 200px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  /* background: #ffffff; */
+  /* border-radius: 14px; */
+  /* padding: 12px 12px 8px; */
+  width: auto;
+  height: auto;
+  /* box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); */
 }
 
 .fundPreviewHeader {
@@ -370,6 +370,7 @@
 .fundStats {
   display: flex;
   align-items: baseline;
+  justify-content: space-between;
   gap: 5px;
   margin-bottom: 6px;
 }
@@ -708,6 +709,9 @@
   }
   .chartBars {
     height: 200px;
+  }
+  .fundPreview {
+    width: 180px;
   }
 }
 
@@ -1108,6 +1112,11 @@
        row 1 — kyc(3fr) + fund(4fr)
        row 2 — advisor(3fr) + tax(4fr) equal via explicit placement below */
     /* grid-template-columns: 3fr 4fr; */
+    /* grid-template-columns: 4fr; */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    /* gap: 10px;
+    margin: 12px; */
     gap: 16px;
   }
 
@@ -1116,15 +1125,15 @@
     grid-column: span 2;
   }
   .fund {
-    grid-column: span 3;
+    grid-column: span 2;
   }
 
   /* row 2: swap so advisor takes the wider slot → visually equal feel */
   .advisor {
-    grid-column: span 1;
+    grid-column: span 2;
   }
   .tax {
-    grid-column: span 4;
+    grid-column: span 2;
   }
 
   /* height ratio row1:row2 = 2:1, row2 a bit bigger than before */
@@ -1478,13 +1487,6 @@
     width: 100%;
   }
 
-  /* Single column on small phones — cards take full width */
-  .problemGrid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin: 12px;
-  }
-
   .kyc,
   .fund,
   .advisor,
@@ -1496,13 +1498,13 @@
 
   /* Fund preview widget: scale down so it doesn't overflow */
   .fundPreview {
-    width: 130px;
-    padding: 10px 10px 6px;
+    width: 110px;
+    /* padding: 10px 10px 6px; */
   }
 
   .fundPreviewStack {
     right: 10px;
-    bottom: 10px;
+    bottom: 0px;
   }
 
   /* Paper image: smaller on tiny screens */
@@ -1541,6 +1543,10 @@
   }
   .problemSection {
     margin-top: 0px;
+  }
+  .cardDescriptionFund {
+    width: 50%;
+    text-align: left;
   }
 }
 
@@ -1746,6 +1752,14 @@
   .layerPhoneImage {
     object-fit: contain;
   }
+
+  .fundPreview {
+    width: 150px;
+  }
+  .cardDescriptionFund {
+    width: 180px;
+    text-align: left;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -1801,5 +1815,9 @@
     z-index: 3;
     --offset-x: calc(var(--stage-size) * -0.35); /* right */
     --offset-y: calc(var(--stage-size) * -0.28);
+  }
+  .cardDescriptionFund {
+    width: 80%;
+    text-align: left;
   }
 }
