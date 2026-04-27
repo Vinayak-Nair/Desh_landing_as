@@ -12,6 +12,8 @@ import styles from "@/app/page.module.css";
 
 export function HeroSection() {
   const phoneControls = useAnimation();
+  const cloudRightControls = useAnimation();
+  const cloudLeftControls = useAnimation();
   const cardsRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardsRef, { once: true, margin: "-100px" });
 
@@ -34,6 +36,42 @@ export function HeroSection() {
     }
     sequence();
   }, [phoneControls]);
+
+  useEffect(() => {
+    const r = 10;
+    const steps = 8;
+    const xs = Array.from({ length: steps + 1 }, (_, i) =>
+      +(r * Math.cos((2 * Math.PI * i) / steps)).toFixed(2)
+    );
+    const ys = Array.from({ length: steps + 1 }, (_, i) =>
+      +(r * Math.sin((2 * Math.PI * i) / steps)).toFixed(2)
+    );
+
+    async function startRight() {
+      await cloudRightControls.start({
+        opacity: 1, y: 0,
+        transition: { duration: 1.2, delay: 1.4, ease: "easeOut" },
+      });
+      cloudRightControls.start({
+        x: xs, y: ys,
+        transition: { duration: 10, ease: "linear", repeat: Infinity },
+      });
+    }
+
+    async function startLeft() {
+      await cloudLeftControls.start({
+        opacity: 1, y: 0,
+        transition: { duration: 1.2, delay: 1.6, ease: "easeOut" },
+      });
+      cloudLeftControls.start({
+        x: xs.map(v => -v), y: ys.map(v => -v),
+        transition: { duration: 12, ease: "linear", repeat: Infinity },
+      });
+    }
+
+    startRight();
+    startLeft();
+  }, [cloudRightControls, cloudLeftControls]);
 
   return (
     <>
@@ -109,8 +147,7 @@ export function HeroSection() {
             className={`${styles.stageLayer} ${styles.layerCloudRight}`}
             aria-hidden="true"
             initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 1.4, ease: "easeOut" }}
+            animate={cloudRightControls}
           >
             <img
               src="/figma/colud.png"
@@ -123,8 +160,7 @@ export function HeroSection() {
             className={`${styles.stageLayer} ${styles.layerCloudLeft}`}
             aria-hidden="true"
             initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 1.4, ease: "easeOut" }}
+            animate={cloudLeftControls}
           >
             <img
               src="/figma/colud.png"
