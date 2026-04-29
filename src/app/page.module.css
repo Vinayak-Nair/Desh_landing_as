@@ -164,6 +164,7 @@
   margin-top: 10px;
   position: relative;
   z-index: 999;
+  background: linear-gradient(to top, white 70%, transparent);
 }
 
 .sectionTag {
@@ -200,6 +201,7 @@
   /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
   gap: 12px;
   margin: 20px;
+  backdrop-filter: blur(10px);
 }
 
 /* mobile: all cards equal — spans reset to 1 */
@@ -712,6 +714,9 @@
   }
   .fundPreview {
     width: 180px;
+  }
+  .cardDescriptionFund {
+    width: 50%;
   }
 }
 
@@ -1412,7 +1417,7 @@
   }
 
   .problemSection {
-    padding: 150px 0 10px;
+    padding: 10px 0 10px;
   }
 
   .growthSection {
@@ -1421,6 +1426,7 @@
   }
   .problemGrid {
     display: grid;
+    /* background-color: #ffffff; */
     /* mobile: 2 equal columns */
     grid-template-columns: repeat(10, minmax(0, 1fr));
     gap: 12px;
@@ -1773,7 +1779,7 @@
     object-fit: contain;
     z-index: 5;
     pointer-events: none;
-    --offset-y: calc(var(--stage-size) * 0.15);
+    --offset-y: calc(var(--stage-size) * 0.05);
   }
 
   /* Layer 4 — phone centerpiece (sized by aspect ratio) */
@@ -1783,7 +1789,7 @@
     aspect-ratio: 220 / 440;
     z-index: 4;
     --offset-x: 0;
-    --offset-y: calc(var(--stage-size) * -0.2);
+    --offset-y: calc(var(--stage-size) * -0.29);
   }
 
   .layerPhoneImage {
@@ -1817,7 +1823,10 @@
     --offset-y: calc(var(--stage-size) * -0.28);
   }
   .cardDescriptionFund {
-    width: 80%;
+    width: 50%;
     text-align: left;
+  }
+  .fundPreview {
+    width: 250px;
   }
 }

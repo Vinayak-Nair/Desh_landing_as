@@ -40,31 +40,37 @@ export function HeroSection() {
   useEffect(() => {
     const r = 10;
     const steps = 8;
-    const xs = Array.from({ length: steps + 1 }, (_, i) =>
-      +(r * Math.cos((2 * Math.PI * i) / steps)).toFixed(2)
+    const xs = Array.from(
+      { length: steps + 1 },
+      (_, i) => +(r * Math.cos((2 * Math.PI * i) / steps)).toFixed(2),
     );
-    const ys = Array.from({ length: steps + 1 }, (_, i) =>
-      +(r * Math.sin((2 * Math.PI * i) / steps)).toFixed(2)
+    const ys = Array.from(
+      { length: steps + 1 },
+      (_, i) => +(r * Math.sin((2 * Math.PI * i) / steps)).toFixed(2),
     );
 
     async function startRight() {
       await cloudRightControls.start({
-        opacity: 1, y: 0,
+        opacity: 1,
+        y: 0,
         transition: { duration: 1.2, delay: 1.4, ease: "easeOut" },
       });
       cloudRightControls.start({
-        x: xs, y: ys,
+        x: xs,
+        y: ys,
         transition: { duration: 10, ease: "linear", repeat: Infinity },
       });
     }
 
     async function startLeft() {
       await cloudLeftControls.start({
-        opacity: 1, y: 0,
+        opacity: 1,
+        y: 0,
         transition: { duration: 1.2, delay: 1.6, ease: "easeOut" },
       });
       cloudLeftControls.start({
-        x: xs.map(v => -v), y: ys.map(v => -v),
+        x: xs.map((v) => -v),
+        y: ys.map((v) => -v),
         transition: { duration: 12, ease: "linear", repeat: Infinity },
       });
     }
@@ -122,7 +128,7 @@ export function HeroSection() {
           {/* Layer 3 — landscape / horizon backdrop */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/figma/fg.png"
+            src="/figma/background-hero.png"
             alt=""
             aria-hidden="true"
             className={`${styles.stageLayer} ${styles.layerHorizon}`}
