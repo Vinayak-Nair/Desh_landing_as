@@ -1,25 +1,86 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import Image from 'next/image';
 import { Sheet, SheetContent, SheetFooter } from '@/components/ui/sheet';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { MenuToggle } from '@/components/ui/menu-toggle';
+import posthog from 'posthog-js';
+
+type CalApi = ((...args: unknown[]) => unknown) & {
+	loaded?: boolean;
+	ns?: Record<string, CalApi>;
+	q?: unknown[][];
+};
+
+type CalWindow = Window &
+	typeof globalThis & {
+		Cal?: CalApi;
+	};
 
 export function SimpleHeader() {
 	const [open, setOpen] = React.useState(false);
 
 	const links = [
-		{ label: 'About', href: '#' },
-		{ label: 'Calculate', href: '#' },
-		{ label: 'Contact us', href: '#' },
+		{ 
+			label: 'Book a call with us', 
+			href: 'https://cal.com/vinayak-nair-vbtd74/1-1-call-with-aswin-investing-from-abroad',
+			isCal: true 
+		},
 	];
+
+	useEffect(() => {
+		(function (C: CalWindow, A: string, L: string) {
+			const p = function (a: CalApi, ar: unknown[]) {
+				a.q = a.q || [];
+				a.q.push(ar);
+			};
+			const d = C.document;
+			C.Cal = C.Cal || function (...args: unknown[]) {
+				const cal = C.Cal as CalApi;
+				if (!cal.loaded) {
+					cal.ns = {};
+					cal.q = cal.q || [];
+					d.head.appendChild(d.createElement("script")).src = A;
+					cal.loaded = true;
+				}
+				if (args[0] === L) {
+					const api: CalApi = function (...apiArgs: unknown[]) {
+						p(api, apiArgs);
+					};
+					const namespace = args[1];
+					api.q = api.q || [];
+					if(typeof namespace === "string"){
+						const namespaces = cal.ns || {};
+						cal.ns = namespaces;
+						namespaces[namespace] = namespaces[namespace] || api;
+						p(namespaces[namespace], args);
+						return namespaces[namespace];
+					}
+					p(cal, args);
+					return cal;
+				}
+				p(cal, args);
+			};
+		})(window, "https://app.cal.com/embed/embed.js", "init");
+		const calWindow = window as CalWindow;
+		calWindow.Cal?.("init", {origin:"https://cal.com"});
+		calWindow.Cal?.("ui", {"styles":{"branding":{"brandColor":"#000000"}},"hideEventTypeDetails":false,"layout":"month_view"});
+	}, []);
 
 	return (
 		<header className="sticky top-0 z-50 w-full">
 			<nav className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-6 lg:px-[100px]">
 				{/* Logo */}
 				<div className="flex items-center gap-2">
-					<span className="font-mono text-lg font-bold italic tracking-tight text-[#121212]">Desh</span>
+					<Image
+						src="/desh-logo.svg"
+						alt="Desh"
+						width={134}
+						height={68}
+						priority
+						className="h-9 w-auto"
+					/>
 				</div>
 
 				{/* Desktop links */}
@@ -29,11 +90,24 @@ export function SimpleHeader() {
 							key={link.label}
 							className={buttonVariants({ variant: 'ghost' })}
 							href={link.href}
+							onClick={() => {
+								posthog.capture('book_a_call_clicked', { location: 'header' });
+							}}
+							{...(link.isCal ? {
+								'data-cal-link': "vinayak-nair-vbtd74/1-1-call-with-aswin-investing-from-abroad",
+								'data-cal-config': '{"layout":"month_view"}'
+							} : {})}
 						>
 							{link.label}
 						</a>
 					))}
-					<Button className="ml-2 rounded-[8px] bg-[#121212] px-6 text-white hover:bg-[#2a2a2a]">
+					<Button 
+						className="ml-2 rounded-[8px] bg-[#121212] px-6 text-white hover:bg-[#2a2a2a]"
+						onClick={() => {
+							posthog.capture('whatsapp_community_clicked', { location: 'header' });
+							window.open("https://chat.whatsapp.com/KmasCJMGJ42Bqn9a4PkMw6?mode=gi_t", "_blank", "noopener,noreferrer");
+						}}
+					>
 						Join us
 					</Button>
 				</div>
@@ -62,13 +136,26 @@ export function SimpleHeader() {
 										className: 'justify-start',
 									})}
 									href={link.href}
+									onClick={() => {
+										posthog.capture('book_a_call_clicked', { location: 'header_mobile' });
+									}}
+									{...(link.isCal ? {
+										'data-cal-link': "vinayak-nair-vbtd74/1-1-call-with-aswin-investing-from-abroad",
+										'data-cal-config': '{"layout":"month_view"}'
+									} : {})}
 								>
 									{link.label}
 								</a>
 							))}
 						</div>
 						<SheetFooter>
-							<Button className="rounded-full bg-[#121212] text-white hover:bg-[#2a2a2a]">
+							<Button 
+								className="rounded-full bg-[#121212] text-white hover:bg-[#2a2a2a]"
+								onClick={() => {
+									posthog.capture('whatsapp_community_clicked', { location: 'header_mobile' });
+									window.open("https://chat.whatsapp.com/KmasCJMGJ42Bqn9a4PkMw6?mode=gi_t", "_blank", "noopener,noreferrer");
+								}}
+							>
 								Join us
 							</Button>
 						</SheetFooter>

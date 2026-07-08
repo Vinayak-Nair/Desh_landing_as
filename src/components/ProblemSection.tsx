@@ -4,33 +4,191 @@ import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import Image from "next/image";
 import { BlurredStagger } from "@/components/ui/blurred-stagger-text";
+import styles from "@/app/page.module.css";
 
-const cards = [
+type ProblemCardData = {
+  id: "kyc" | "fund" | "advisor" | "tax";
+  size: "large" | "compact";
+  title: string;
+  description: string;
+  image: string;
+};
+
+const problemCards: ProblemCardData[] = [
   {
-    title: ["Complex KYC", "& Paperwork"],
+    id: "kyc",
+    size: "large",
+    title: "Complex KYC\n& Paperwork",
     description:
-      "Reams of documents, overseas notarisation, and bank rejections. We walk you through every form, step by step.",
-    image: "/figma/paper.png",
+      "Reams of documents, overseas\nnotarisation, and bank rejections.\nWe walk you through every form,\nstep by step.",
+    image: "/figma/kyc-card-bg.png",
   },
   {
-    title: ["Which Fund Do", "I Even Pick?"],
+    id: "fund",
+    size: "large",
+    title: "Which Fund Do\nI Even Pick?",
     description:
-      "Hundreds of funds, zero guidance. We curate portfolios specifically designed for NRI risk profiles and goals.",
-    image: "/figma/ruppee.png",
+      "Hundreds of funds, zero guidance. We\ncurate portfolios specifically designed\nfor NRI risk profiles and goals.",
+    image: "/figma/fund-card-bg.png",
   },
   {
-    title: ["No Trusted", "Advisor Abroad"],
+    id: "advisor",
+    size: "compact",
+    title: "No Trusted Advisor\nAbroad",
     description:
-      "Local advisors don't understand Indian markets. We're your certified guide familiar face, deep expertise.",
-    image: "/figma/shield.png",
+      "Local advisors do not understand Indian markets. We are your certified guide with deep expertise.",
+    image: "/figma/advisor-card-bg.png",
   },
   {
-    title: ["Repatriation &", "Tax Confusion"],
+    id: "tax",
+    size: "compact",
+    title: "Repatriation & Tax\nConfusion",
     description:
-      "DTAA, TDS, FEMA sounds scary. We simplify the cross border tax picture so your money moves freely.",
-    image: "/figma/money.png",
+      "DTAA, TDS, and FEMA sound scary. We simplify the cross-border tax picture so your money moves freely.",
+    image: "/figma/tax-card-bg.png",
   },
 ];
+
+function ProblemCard({
+  card,
+  delay,
+}: {
+  card: ProblemCardData;
+  delay: number;
+}) {
+  const isKycCard = card.id === "kyc";
+  const isFundCard = card.id === "fund";
+
+  return (
+    <motion.article
+      className={`${styles.problemCard} ${styles[card.size]} ${styles[card.id]}`}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay, ease: "easeOut" }}
+    >
+      <Image
+        src={card.image}
+        alt=""
+        fill
+        sizes={
+          isKycCard
+            ? "(min-width: 1200px) 335px, (min-width: 768px) calc((100vw - 66px) / 2), 44vw"
+            : isFundCard
+              ? "(min-width: 1200px) 685px, (min-width: 768px) calc(100vw - 405px), 44vw"
+              : "(max-width: 480px) 44vw, 180px"
+        }
+        className={styles.cardBackground}
+      />
+      <div className={styles.cardOverlay} />
+      <div className={styles.cardContent}>
+        <h3 className={styles.cardTitle}>{card.title}</h3>
+        <p className={styles.cardDescription}>{card.description}</p>
+      </div>
+
+      {isKycCard && (
+        <div className={styles.paperStack}>
+          <Image
+            src="/figma/kyc-paper.png"
+            alt=""
+            width={249}
+            height={253}
+            sizes="(min-width: 1200px) 249px, (min-width: 768px) 32vw, 30vw"
+            className={styles.paperImage}
+          />
+        </div>
+      )}
+
+      {isFundCard && (
+        <div className={styles.fundPreviewStack} aria-hidden="true">
+          <div className={styles.fundPreviewEcho} />
+          <div className={styles.fundPreview}>
+            <div className={styles.fundPreviewHeader}>
+              <div className={styles.fundBadge}>
+                <svg
+                  viewBox="0 0 49 49"
+                  className={styles.fundBadgeIcon}
+                  aria-hidden="true"
+                >
+                  <rect width="49" height="49" rx="9" fill="#FFFDEA" />
+                  <path
+                    d="M10 27.5c3.6-5.4 9-8.1 15.7-8.1 4.8 0 8.6 1.1 13.3 4.4"
+                    fill="none"
+                    stroke="#129C45"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="4.1"
+                  />
+                  <path
+                    d="M28.8 14.2c2.7.6 4.8 2.4 5.6 4.7-2.8.8-5.9-.1-8-2.3.5-1.5 1.3-2.1 2.4-2.4Z"
+                    fill="#F2C333"
+                  />
+                  <path
+                    d="M11.5 31.8c6.6 2.9 12.6 3.3 19 1.1 4.7-1.6 7.1-1.8 10.7-.7"
+                    fill="none"
+                    stroke="#5DB0F2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="3"
+                  />
+                </svg>
+              </div>
+              <div className={styles.fundCopy}>
+                <strong>Parag Parikh Flexi</strong>
+                <strong>Cap Fund</strong>
+              </div>
+            </div>
+
+            <div className={styles.fundMeta}>
+              <span>Commodities</span>
+              <span className={styles.fundMetaDot} />
+              <span>Silver</span>
+            </div>
+
+            <div className={styles.fundStats}>
+              <strong>48.4%</strong>
+              <span>3Y Annualised</span>
+            </div>
+
+            <div className={styles.fundGraph}>
+              <svg
+                viewBox="0 0 258 95"
+                preserveAspectRatio="none"
+                className={styles.fundGraphSvg}
+              >
+                <defs>
+                  <linearGradient
+                    id="fund-area-gradient"
+                    x1="129"
+                    x2="129"
+                    y1="0"
+                    y2="95"
+                  >
+                    <stop offset="0%" stopColor="#AAFFBD" stopOpacity="0.7" />
+                    <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M6 79C16 63 25 68 34 48c8-17 21-23 33-11 6 6 7 20 16 22 12 3 21-7 31-6 13 1 18 11 28 12 7 1 12-3 19-3 14 0 20 8 33 8 13 0 24-5 34 2 8 5 11 14 18 16 20-28 27-69 38-88v95H6Z"
+                  fill="url(#fund-area-gradient)"
+                />
+                <path
+                  d="M6 79C16 63 25 68 34 48c8-17 21-23 33-11 6 6 7 20 16 22 12 3 21-7 31-6 13 1 18 11 28 12 7 1 12-3 19-3 14 0 20 8 33 8 13 0 24-5 34 2 8 5 11 14 18 16 20-28 27-69 38-88"
+                  fill="none"
+                  stroke="#00A52C"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="3.2"
+                />
+              </svg>
+              <div className={styles.fundTag}>₹234</div>
+              <span className={styles.fundGraphDot} />
+            </div>
+          </div>
+        </div>
+      )}
+    </motion.article>
+  );
+}
 
 export function ProblemSection() {
   const ref = useRef<HTMLDivElement>(null);
@@ -57,16 +215,10 @@ export function ProblemSection() {
           {isInView && (
             <>
               <span className="block">
-                <BlurredStagger
-                  text="Investing in India shouldn't"
-                  delay={0.2}
-                />
+                <BlurredStagger text="Investing in India shouldn't" delay={0.2} />
               </span>
               <span className="block">
-                <BlurredStagger
-                  text="feel like a full time job."
-                  delay={0.7}
-                />
+                <BlurredStagger text="feel like a full time job." delay={0.7} />
               </span>
             </>
           )}
@@ -84,49 +236,16 @@ export function ProblemSection() {
         )}
       </div>
 
-      {/* Cards -- 2x2 grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 w-full max-w-[1040px] mt-8 md:mt-12">
-        {cards.map((card, index) => (
-          <motion.div
-            key={card.title[0]}
-            className="relative flex flex-col bg-[#f6f6f6] border border-[#f2f2f2] rounded-[20px] p-6 md:p-8 min-h-[260px] md:min-h-[284px] overflow-hidden"
-            initial={{ opacity: 0, y: 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{
-              duration: 0.7,
-              delay: 1.8 + index * 0.15,
-              ease: "easeOut",
-            }}
-          >
-            {/* Top area: dot + title + image */}
-            <div className="flex items-start justify-between w-full">
-              {/* Left: dot + title */}
-              <div className="flex flex-col items-start">
-                <span className="w-[7px] h-[7px] rounded-full bg-black mb-5" />
-                <h3 className="font-['General_Sans'] font-semibold text-black text-[1.25rem] md:text-[1.75rem] leading-[1.2] tracking-[-0.5px]">
-                  {card.title[0]}
-                  <br />
-                  {card.title[1]}
-                </h3>
-              </div>
-              {/* Right: image */}
-              <div className="relative w-[72px] h-[72px] md:w-[100px] md:h-[100px] flex-shrink-0">
-                <Image
-                  src={card.image}
-                  alt={card.title.join(" ")}
-                  fill
-                  style={{ objectFit: "contain" }}
-                />
-              </div>
-            </div>
-
-            {/* Bottom: description */}
-            <p className="font-['General_Sans'] font-normal text-[#6b7280] text-xs md:text-sm leading-[1.6] mt-auto max-w-[380px]">
-              {card.description}
-            </p>
-          </motion.div>
-        ))}
-      </div>
+      {/* Cards */}
+      {isInView && (
+        <div
+          className={`${styles.problemGrid} w-full max-w-[1040px] mt-8 md:mt-12`}
+        >
+          {problemCards.map((card, index) => (
+            <ProblemCard key={card.id} card={card} delay={0.2 + index * 0.15} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
