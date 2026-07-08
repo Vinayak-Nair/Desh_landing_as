@@ -1,10 +1,22 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import Image from 'next/image';
 import { Sheet, SheetContent, SheetFooter } from '@/components/ui/sheet';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { MenuToggle } from '@/components/ui/menu-toggle';
 import posthog from 'posthog-js';
+
+type CalApi = ((...args: unknown[]) => unknown) & {
+	loaded?: boolean;
+	ns?: Record<string, CalApi>;
+	q?: unknown[][];
+};
+
+type CalWindow = Window &
+	typeof globalThis & {
+		Cal?: CalApi;
+	};
 
 export function SimpleHeader() {
 	const [open, setOpen] = React.useState(false);
@@ -18,35 +30,42 @@ export function SimpleHeader() {
 	];
 
 	useEffect(() => {
-		(function (C, A, L) {
-			let p = function (a: any, ar: any) { a.q.push(ar); };
-			let d = C.document;
-			(C as any).Cal = (C as any).Cal || function () {
-				let cal = (C as any).Cal;
-				let ar = arguments;
+		(function (C: CalWindow, A: string, L: string) {
+			const p = function (a: CalApi, ar: unknown[]) {
+				a.q = a.q || [];
+				a.q.push(ar);
+			};
+			const d = C.document;
+			C.Cal = C.Cal || function (...args: unknown[]) {
+				const cal = C.Cal as CalApi;
 				if (!cal.loaded) {
 					cal.ns = {};
 					cal.q = cal.q || [];
 					d.head.appendChild(d.createElement("script")).src = A;
 					cal.loaded = true;
 				}
-				if (ar[0] === L) {
-					const api: any = function () { p(api, arguments); };
-					const namespace = ar[1];
+				if (args[0] === L) {
+					const api: CalApi = function (...apiArgs: unknown[]) {
+						p(api, apiArgs);
+					};
+					const namespace = args[1];
 					api.q = api.q || [];
 					if(typeof namespace === "string"){
-						cal.ns[namespace] = cal.ns[namespace] || api;
-						p(cal.ns[namespace], ar);
-						return cal.ns[namespace];
+						const namespaces = cal.ns || {};
+						cal.ns = namespaces;
+						namespaces[namespace] = namespaces[namespace] || api;
+						p(namespaces[namespace], args);
+						return namespaces[namespace];
 					}
-					p(cal, ar);
+					p(cal, args);
 					return cal;
 				}
-				p(cal, ar);
+				p(cal, args);
 			};
 		})(window, "https://app.cal.com/embed/embed.js", "init");
-		(window as any).Cal("init", {origin:"https://cal.com"});
-		(window as any).Cal("ui", {"styles":{"branding":{"brandColor":"#000000"}},"hideEventTypeDetails":false,"layout":"month_view"});
+		const calWindow = window as CalWindow;
+		calWindow.Cal?.("init", {origin:"https://cal.com"});
+		calWindow.Cal?.("ui", {"styles":{"branding":{"brandColor":"#000000"}},"hideEventTypeDetails":false,"layout":"month_view"});
 	}, []);
 
 	return (
@@ -54,7 +73,14 @@ export function SimpleHeader() {
 			<nav className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-6 lg:px-[100px]">
 				{/* Logo */}
 				<div className="flex items-center gap-2">
-					<span className="font-mono text-lg font-bold italic tracking-tight text-[#121212]">Desh</span>
+					<Image
+						src="/desh-logo.svg"
+						alt="Desh"
+						width={134}
+						height={68}
+						priority
+						className="h-9 w-auto"
+					/>
 				</div>
 
 				{/* Desktop links */}
