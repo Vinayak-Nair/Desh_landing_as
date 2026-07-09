@@ -1636,33 +1636,6 @@
   object-fit: contain;
 }
 
-/* Layer 5 — foreground accent (floating card / badge slot) */
-.layerCloudRight {
-  width: calc(var(--stage-size) * 0.12);
-  height: calc(var(--stage-size) * 0.06);
-  /* border-radius: 14px; */
-  /* background: rgba(255, 255, 255, 0.9); */
-  /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
-  /* Nudge it off-center so it reads as foreground, not stacked dead-center */
-  transform: translate(35%, 60%);
-  z-index: 3;
-  --offset-x: calc(var(--stage-size) * 0.35); /* right */
-  --offset-y: calc(var(--stage-size) * -0.28);
-}
-
-.layerCloudLeft {
-  width: calc(var(--stage-size) * 0.12);
-  height: calc(var(--stage-size) * 0.06);
-  /* border-radius: 14px; */
-  /* background: rgba(255, 255, 255, 0.9); */
-  /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
-  /* Nudge it off-center so it reads as foreground, not stacked dead-center */
-  transform: translate(35%, 60%);
-  z-index: 3;
-  --offset-x: calc(var(--stage-size) * -0.35); /* right */
-  --offset-y: calc(var(--stage-size) * -0.28);
-}
-
 @media (max-width: 768px) {
   /* Clip the phone bottom so it doesn't leak below the landscape */
   .hero {
@@ -1796,32 +1769,6 @@
     object-fit: contain;
   }
 
-  /* Layer 5 — foreground accent (floating card / badge slot) */
-  .layerCloudRight {
-    width: calc(var(--stage-size) * 0.12);
-    height: calc(var(--stage-size) * 0.06);
-    /* border-radius: 14px; */
-    /* background: rgba(255, 255, 255, 0.9); */
-    /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
-    /* Nudge it off-center so it reads as foreground, not stacked dead-center */
-    transform: translate(35%, 60%);
-    z-index: 3;
-    --offset-x: calc(var(--stage-size) * 0.35); /* right */
-    --offset-y: calc(var(--stage-size) * -0.28);
-  }
-
-  .layerCloudLeft {
-    width: calc(var(--stage-size) * 0.12);
-    height: calc(var(--stage-size) * 0.06);
-    /* border-radius: 14px; */
-    /* background: rgba(255, 255, 255, 0.9); */
-    /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); */
-    /* Nudge it off-center so it reads as foreground, not stacked dead-center */
-    transform: translate(35%, 60%);
-    z-index: 3;
-    --offset-x: calc(var(--stage-size) * -0.35); /* right */
-    --offset-y: calc(var(--stage-size) * -0.28);
-  }
   .cardDescriptionFund {
     width: 50%;
     text-align: left;
