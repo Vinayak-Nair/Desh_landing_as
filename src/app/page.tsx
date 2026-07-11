@@ -3,7 +3,6 @@ import { HeroSection } from "@/components/HeroSection";
 import { OffersSection } from "@/components/OffersSection";
 import { InvestmentCalculator } from "@/components/InvestmentCalculator";
 import { CTASection } from "@/components/CTASection";
-import { TickerDivider } from "@/components/TickerDivider";
 import { ClosingSection } from "@/components/ClosingSection";
 
 export default function Home() {
@@ -27,9 +26,6 @@ export default function Home() {
 
       {/* Fourth section — CTA / WhatsApp community */}
       <CTASection />
-
-      {/* Looping ticker divider */}
-      <TickerDivider />
 
       {/* Closing quote + footer, merged into one gradient container */}
       <ClosingSection />
