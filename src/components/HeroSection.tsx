@@ -12,7 +12,25 @@ import styles from "@/app/page.module.css";
 export function HeroSection() {
   const phoneControls = useAnimation();
   const cardsRef = useRef<HTMLDivElement>(null);
+  const phoneRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardsRef, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    // The embedded Replit app (a full phone mockup) isn't responsive
+    // below phone width, so the iframe renders at a fixed 424×876
+    // virtual viewport and is scaled to fit the container here. The
+    // scale is also used by the CSS to size the container's corner
+    // radius to the mockup's own, clipping the mockup page's white
+    // background at the corners while keeping the phone frame intact.
+    const el = phoneRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const width = entry.contentRect.width;
+      el.style.setProperty("--phone-scale", String(width / 424));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     async function sequence() {
@@ -91,17 +109,16 @@ export function HeroSection() {
 
           {/* Layer 4 — phone centerpiece */}
           <motion.div
+            ref={phoneRef}
             className={`${styles.stageLayer} ${styles.layerPhone}`}
             initial={{ y: 100, opacity: 0 }}
             animate={phoneControls}
           >
-            <video
+            <iframe
+              src="https://vicious-plum-professionals.replit.app/"
+              title="Desh mobile app preview"
               className={styles.phoneScreen}
-              src="/videos/hero-phone.mp4"
-              autoPlay
-              muted
-              playsInline
-              preload="auto"
+              scrolling="no"
             />
           </motion.div>
         </div>

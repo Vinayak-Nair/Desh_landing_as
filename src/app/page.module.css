@@ -155,14 +155,21 @@
 }
 
 .phoneScreen {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  /* a <video> renders solid black until its first frame paints —
-     on mobile (slower load, stricter autoplay handling) that gap is
-     long enough to be visible. Match the app UI's own dark theme so
-     any pre-paint gap blends in instead of looking like a bug. */
+  /* Fixed virtual viewport for the embedded app (it breaks below
+     phone width), centered and scaled to fit the container by
+     --phone-scale (set from a ResizeObserver in HeroSection).
+     The app renders a complete phone mockup, so it fits exactly —
+     no crop. Fallback 0 keeps the unscaled 424px frame invisible
+     until measured. */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 424px;
+  height: 876px;
+  border: none;
+  transform: translate(-50%, -50%) scale(var(--phone-scale, 0));
+  /* the iframe app paints late on slow loads — match its dark UI
+     theme so the gap blends in instead of looking like a bug. */
   background: radial-gradient(circle at 30% 15%, #16321d 0%, #0a0a0a 70%);
 }
 
@@ -1359,13 +1366,12 @@
   z-index: 4;
   --offset-x: 0;
   --offset-y: calc(var(--stage-size) * -0.2);
-  /* clips the small black corner triangles baked into the source
-     video (its rounded bezel doesn't quite reach the video canvas's
-     square corners). Uses a length (not %) so the radius is a true
-     circular arc — a percentage here would stretch into an ellipse
-     since the box is a tall 1:2 rectangle, which looked like a
-     stray border/shadow around the phone. */
-  border-radius: calc(var(--stage-size) * 0.016);
+  /* the embedded mockup sits on a white page — round the clip to
+     the mockup's own corner radius (~64px at its 424px virtual
+     width) so the white page corners are cut away while the phone
+     frame itself stays fully visible. Scales with --phone-scale so
+     the arc always matches the mockup at any rendered size. */
+  border-radius: calc(var(--phone-scale, 0) * 64px);
   overflow: hidden;
 }
 
@@ -1418,10 +1424,9 @@
     z-index: 4;
     --offset-x: 0;
     --offset-y: calc(var(--stage-size) * -0.2);
-    /* the formula-based radius (0.016 * stage-size) is too small at
-       mobile's small rendered size to fully hide the video's black
-       corner artifact — use a larger fixed radius here instead. */
-    border-radius: 16px;
+    /* same mockup-matched radius as desktop — scales with
+       --phone-scale so the arc tracks the mockup at mobile sizes. */
+    border-radius: calc(var(--phone-scale, 0) * 64px);
   }
 
   .layerPhoneImage {
