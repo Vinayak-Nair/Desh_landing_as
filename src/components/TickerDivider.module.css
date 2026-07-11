@@ -1,5 +1,5 @@
 .section {
-  background: #121212;
+  background: rgba(255, 255, 255, 0.5);
   overflow: hidden;
   padding: 14px 0;
 }
@@ -12,14 +12,12 @@
   animation: scroll 22s linear infinite;
 }
 
-/* A translucent highlight sitting directly behind the word — vertical
-   padding only, no horizontal padding/border-radius, no nested text
-   container. The 12px rhythm between every element (chip-to-dot and
-   dot-to-chip) comes entirely from .track's gap. */
+/* Plain text, no background/container of its own — the 12px rhythm
+   between every element (chip-to-dot and dot-to-chip) comes entirely
+   from .track's gap. */
 .chip {
   display: inline-block;
   padding: 4px 0;
-  background: rgba(255, 255, 255, 0.5);
   white-space: nowrap;
   font-family: var(--font-mono), monospace;
   font-weight: 700;
