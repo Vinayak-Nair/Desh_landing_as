@@ -19,10 +19,12 @@
   position: relative;
   /* visible: landscape bleeds below; phone stays within hero so no overflow issue */
   overflow: visible;
-  padding: 52px 0px 0;
+  min-height: 100dvh;
+  padding: clamp(28px, 6vh, 52px) 0 clamp(16px, 4vh, 32px);
   background: linear-gradient(180deg, #ffefb8 0%, #fff9e8 43%, #ffffff 100%);
   display: flex;
   flex-direction: column;
+  gap: clamp(12px, 3vh, 32px);
   /* lock hero height to dvh so heroVisual (flex:1) only responds to viewport height, not width */
 }
 
@@ -153,14 +155,21 @@
 }
 
 .phoneScreen {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center top;
+  /* a <video> renders solid black until its first frame paints —
+     on mobile (slower load, stricter autoplay handling) that gap is
+     long enough to be visible. Match the app UI's own dark theme so
+     any pre-paint gap blends in instead of looking like a bug. */
+  background: radial-gradient(circle at 30% 15%, #16321d 0%, #0a0a0a 70%);
 }
 
 /* ── Problem section ── */
 .problemSection {
   /* background: #ffffff; */
-  padding: 0 0 80px;
+  padding: 0;
   margin-top: 10px;
   position: relative;
   z-index: 999;
@@ -194,17 +203,17 @@
   margin-top: 12px;
 }
 
-/* ── Problem cards — asymmetric grid ── */
+/* ── Problem cards — flat light cards with a corner icon ── */
 .problemGrid {
   display: grid;
-  /* mobile: 2 equal columns */
-  /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
-  gap: 12px;
-  margin: 20px;
-  backdrop-filter: blur(10px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+  margin-top: 56px;
+  margin-bottom: 48px;
 }
 
-/* mobile: all cards equal — spans reset to 1 */
+/* all cards equal — always a clean 2×2 grid */
 .kyc,
 .fund,
 .advisor,
@@ -216,213 +225,61 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 200px;
-  border-radius: 16px;
+  justify-content: flex-start;
+  gap: 32px;
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  background: #f7f7f7;
+  padding: 24px 24px 56px;
   overflow: hidden;
-  background: #1a1a1a;
 }
 
-.large {
-  min-height: 240px;
-}
-
-.compact {
-  min-height: 180px;
-}
-
-/* Full-bleed background image */
-.cardBackground {
-  object-fit: cover;
-  object-position: center;
-  z-index: 0;
-  filter: blur(1px);
-  -webkit-filter: blur(10px); /* For Safari support */
-}
-
-/* Gradient overlay for text readability */
-.cardOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border-radius: inherit;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.04) 0%,
-    rgba(0, 0, 0, 0.52) 100%
-  );
-}
-
-/* Text content sits above overlay */
-.cardContent {
-  position: relative;
-  z-index: 2;
+.cardTop {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  padding: 18px;
+  align-items: flex-start;
+  gap: 32px;
+  padding-right: 30%;
+}
+
+.cardBullet {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffc400;
+  border: 3px solid rgba(255, 196, 0, 0.18);
 }
 
 .cardTitle {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-family: "General Sans", var(--font-display), sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
   line-height: 1.25;
-  color: #ffffff;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
   white-space: pre-line;
 }
 
 .cardDescription {
   margin: 0;
-  margin-top: 8px;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-secondary);
   white-space: pre-line;
+  padding-right: 8%;
 }
 
-/* ── KYC card: paper stack decoration ── */
-.paperStack {
+.cardIcon {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.paperImage {
-  display: block;
-  width: clamp(100px, 22vw, 249px);
-  height: auto;
-}
-
-/* ── Fund card: mini fund-preview widget ── */
-.fundPreviewStack {
-  position: absolute;
+  top: 14px;
   right: 14px;
-  bottom: 0px;
-  z-index: 3;
-}
-
-.fundPreviewEcho {
-  position: absolute;
-  inset: 5px -5px -5px 5px;
-  background: rgba(255, 255, 255, 0.22);
-  border-radius: 14px;
-}
-
-.fundPreview {
-  position: relative;
-  /* background: #ffffff; */
-  /* border-radius: 14px; */
-  /* padding: 12px 12px 8px; */
-  width: auto;
+  width: clamp(56px, 20%, 96px);
   height: auto;
-  /* box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18); */
-}
-
-.fundPreviewHeader {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 5px;
-}
-
-.fundBadge {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 7px;
-  overflow: hidden;
-}
-
-.fundBadgeIcon {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.fundCopy {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.55rem;
-  font-weight: 600;
-  line-height: 1.35;
-  color: #121212;
-}
-
-.fundMeta {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 0.52rem;
-  color: #8b8b8b;
-  margin-bottom: 5px;
-  margin-top: 10px;
-}
-
-.fundMetaDot {
-  display: inline-block;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #8b8b8b;
-}
-
-.fundStats {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 5px;
-  margin-bottom: 6px;
-}
-
-.fundStats strong {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #00a52c;
-}
-
-.fundStats span {
-  font-size: 0.52rem;
-  color: #8b8b8b;
-}
-
-.fundGraph {
-  margin-top: 20px;
-  position: relative;
-  height: 48px;
-}
-
-.fundGraphSvg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.fundTag {
-  position: absolute;
-  right: 0;
-  top: 0;
-  font-size: 0.5rem;
-  font-weight: 700;
-  color: #121212;
-  background: rgba(255, 255, 255, 0.92);
-  padding: 2px 4px;
-  border-radius: 4px;
-}
-
-.fundGraphDot {
-  position: absolute;
-  right: 2px;
-  bottom: 14px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #00a52c;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -711,12 +568,6 @@
   }
   .chartBars {
     height: 200px;
-  }
-  .fundPreview {
-    width: 180px;
-  }
-  .cardDescriptionFund {
-    width: 50%;
   }
 }
 
@@ -1079,7 +930,6 @@
   .hero {
     --hero-phone-width: 248px;
     --hero-phone-lift: 0;
-    padding: 52px 0 0;
   }
 
   .heroCopy {
@@ -1088,14 +938,13 @@
 
   .heroTitle {
     gap: 8px;
-    font-size: 3.8rem;
+    font-size: clamp(3.8rem, 2.733rem + 2.222vw, 4.4rem);
     line-height: 0.95;
   }
 
   .heroSubtitle {
     max-width: 620px;
-    margin-top: 18px;
-    font-size: 1.15rem;
+    font-size: clamp(1.15rem, 0.972rem + 0.37vw, 1.25rem);
   }
 
   .heroVisual {
@@ -1109,84 +958,15 @@
   }
 
   .problemSection {
-    padding: 0 0 24px;
-  }
-
-  .problemGrid {
-    /* 2-column 3:4 grid
-       row 1 — kyc(3fr) + fund(4fr)
-       row 2 — advisor(3fr) + tax(4fr) equal via explicit placement below */
-    /* grid-template-columns: 3fr 4fr; */
-    /* grid-template-columns: 4fr; */
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-
-    /* gap: 10px;
-    margin: 12px; */
-    gap: 16px;
-  }
-
-  /* row 1: natural flow (3fr | 4fr) */
-  .kyc {
-    grid-column: span 2;
-  }
-  .fund {
-    grid-column: span 2;
-  }
-
-  /* row 2: swap so advisor takes the wider slot → visually equal feel */
-  .advisor {
-    grid-column: span 2;
-  }
-  .tax {
-    grid-column: span 2;
-  }
-
-  /* height ratio row1:row2 = 2:1, row2 a bit bigger than before */
-  .large {
-    min-height: 360px;
-  }
-  .compact {
-    min-height: 220px;
-  }
-
-  .problemCard {
-    border-radius: 22px;
-  }
-
-  .cardContent {
-    padding: 22px;
+    padding: 0;
   }
 
   .cardTitle {
-    font-size: 1.52rem;
+    font-size: 1.4rem;
   }
 
   .cardDescription {
-    font-size: 0.82rem;
-  }
-
-  .compact .cardTitle {
-    font-size: 1.2rem;
-  }
-
-  .compact .cardDescription {
-    font-size: 0.76rem;
-  }
-
-  .paperImage {
-    width: clamp(160px, 20vw, 249px);
-  }
-
-  .fundPreview {
-    width: 180px;
-  }
-
-  .fundCopy {
-    font-size: 0.6rem;
-  }
-
-  .fundStats strong {
-    font-size: 1.15rem;
+    font-size: 0.88rem;
   }
 
   .growthSection {
@@ -1372,20 +1152,13 @@
   .hero {
     --hero-phone-width: 19.75vw;
     --hero-phone-lift: 0;
+    min-height: unset;
     height: clamp(60vw, 60vw, 85vw);
     padding-top: 48px;
   }
 
-  .heroTitle {
-    font-size: 4.4rem;
-  }
-
   .heroCopy {
     max-width: 900px;
-  }
-
-  .heroSubtitle {
-    font-size: 1.25rem;
   }
 
   /* heroVisual: flex:1 already set in base — no height override needed */
@@ -1417,36 +1190,12 @@
   }
 
   .problemSection {
-    padding: 10px 0 10px;
+    padding: 0;
   }
 
   .growthSection {
     padding-top: 150px;
     padding-bottom: 70px;
-  }
-  .problemGrid {
-    display: grid;
-    /* background-color: #ffffff; */
-    /* mobile: 2 equal columns */
-    grid-template-columns: repeat(10, minmax(0, 1fr));
-    gap: 12px;
-    margin: 20px;
-  }
-
-  /* row 1: natural flow (3fr | 4fr) */
-  .kyc {
-    grid-column: span 4;
-  }
-  .fund {
-    grid-column: span 6;
-  }
-
-  /* row 2: swap so advisor takes the wider slot → visually equal feel */
-  .advisor {
-    grid-column: span 5;
-  }
-  .tax {
-    grid-column: span 5;
   }
 
   .growthSection::before {
@@ -1502,22 +1251,6 @@
 
   /* heights set by grid-template-rows above */
 
-  /* Fund preview widget: scale down so it doesn't overflow */
-  .fundPreview {
-    width: 110px;
-    /* padding: 10px 10px 6px; */
-  }
-
-  .fundPreviewStack {
-    right: 10px;
-    bottom: 0px;
-  }
-
-  /* Paper image: smaller on tiny screens */
-  .paperImage {
-    width: clamp(80px, 38vw, 140px);
-  }
-
   /* Shrink hero to fit content — no full-viewport dead space */
   .hero {
     /* height: auto; */
@@ -1549,10 +1282,6 @@
   }
   .problemSection {
     margin-top: 0px;
-  }
-  .cardDescriptionFund {
-    width: 50%;
-    text-align: left;
   }
 }
 
@@ -1625,11 +1354,19 @@
 /* Layer 4 — phone centerpiece (sized by aspect ratio) */
 .layerPhone {
   position: relative;
-  width: calc(var(--stage-size) * 0.39);
-  aspect-ratio: 220 / 440;
+  width: calc(var(--stage-size) * 0.225);
+  aspect-ratio: 424 / 876;
   z-index: 4;
   --offset-x: 0;
   --offset-y: calc(var(--stage-size) * -0.2);
+  /* clips the small black corner triangles baked into the source
+     video (its rounded bezel doesn't quite reach the video canvas's
+     square corners). Uses a length (not %) so the radius is a true
+     circular arc — a percentage here would stretch into an ellipse
+     since the box is a tall 1:2 rectangle, which looked like a
+     stray border/shadow around the phone. */
+  border-radius: calc(var(--stage-size) * 0.016);
+  overflow: hidden;
 }
 
 .layerPhoneImage {
@@ -1675,22 +1412,16 @@
      down so the content looks miniaturized, not zoomed-in. */
   .layerPhone {
     position: relative;
-    width: min(50vw, 200px);
-    aspect-ratio: 220 / 440;
+    width: min(28.5vw, 115px);
+    aspect-ratio: 424 / 876;
     overflow: hidden;
     z-index: 4;
     --offset-x: 0;
     --offset-y: calc(var(--stage-size) * -0.2);
-  }
-
-  /* Render iframe at ~550px (desktop-like viewport) then scale
-     it down to fit the small phone container. This makes the
-     content look like a miniature phone preview, not full-size. */
-  .phoneScreen {
-    width: 550px !important;
-    height: 1100px !important;
-    transform: scale(0.36);
-    transform-origin: top left;
+    /* the formula-based radius (0.016 * stage-size) is too small at
+       mobile's small rendered size to fully hide the video's black
+       corner artifact — use a larger fixed radius here instead. */
+    border-radius: 16px;
   }
 
   .layerPhoneImage {
@@ -1721,8 +1452,9 @@
   /* Layer 4 — phone centerpiece (sized by aspect ratio) */
   .layerPhone {
     position: relative;
-    aspect-ratio: 220 / 440;
-    width: 320px;
+    aspect-ratio: 424 / 876;
+    width: min(52%, 242px);
+    height: auto;
     z-index: 4;
     --offset-x: 0;
     --offset-y: -150px;
@@ -1730,14 +1462,6 @@
 
   .layerPhoneImage {
     object-fit: contain;
-  }
-
-  .fundPreview {
-    width: 150px;
-  }
-  .cardDescriptionFund {
-    width: 180px;
-    text-align: left;
   }
 }
 
@@ -1758,11 +1482,17 @@
   /* Layer 4 — phone centerpiece (sized by aspect ratio) */
   .layerPhone {
     position: relative;
-    width: calc(var(--stage-size) * 0.39);
-    aspect-ratio: 220 / 440;
+    width: calc(var(--stage-size) * 0.225);
+    aspect-ratio: 424 / 876;
     z-index: 4;
     --offset-x: 0;
-    --offset-y: calc(var(--stage-size) * -0.29);
+    /* --stage-size is width-driven but this offset moves the phone
+       vertically inside a height-driven stage (75vh) — the original
+       width-scaled upward pull dragged the phone into the headline
+       on wide-but-short viewports (most laptops). A smaller,
+       viewport-height-relative pull keeps a small, consistent gap
+       under the (title + subtitle) block instead. */
+    --offset-y: -30vh;
   }
 
   .layerPhoneImage {

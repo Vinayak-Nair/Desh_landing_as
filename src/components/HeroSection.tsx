@@ -95,15 +95,15 @@ export function HeroSection() {
             initial={{ y: 100, opacity: 0 }}
             animate={phoneControls}
           >
-            <iframe
-              src="https://asset-animator-vinayakvnair08.replit.app/wealth-hero/"
-              title="Desh mobile app preview"
+            <video
               className={styles.phoneScreen}
-              scrolling="no"
-              style={{ border: "none", width: "100%", height: "100%" }}
+              src="/videos/hero-phone.mp4"
+              autoPlay
+              muted
+              playsInline
+              preload="auto"
             />
           </motion.div>
-
         </div>
       </section>
 
@@ -116,7 +116,7 @@ export function HeroSection() {
           <div className="flex flex-col items-center gap-3 md:gap-4 pt-10">
             {isInView && (
               <motion.p
-                className="font-['General_Sans'] font-semibold text-[#f2a100] text-[10px] md:text-xs tracking-[0.14em] uppercase"
+                className="inline-block bg-[#FFC400] text-black font-['General_Sans'] font-semibold text-[10px] md:text-xs tracking-[0.14em] uppercase rounded-[6px] px-2 py-1"
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
@@ -157,7 +157,7 @@ export function HeroSection() {
 
           {isInView && (
             <div
-              className={`${styles.problemGrid} w-full max-w-[1040px] mt-8 md:mt-12`}
+              className={`${styles.problemGrid} w-full max-w-[1040px]`}
             >
               <KycCard delay={0.2} />
               <FundCard delay={0.35} />

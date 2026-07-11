@@ -1,0 +1,101 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(to bottom, #ffffff 0%, #a1d2fe 100%);
+  overflow: hidden;
+}
+
+.quote {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 96px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heading {
+  margin: 0;
+  font-family: "General Sans", var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+  color: #121212;
+}
+
+.line {
+  display: block;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.buttonOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 8px;
+  border: 1px solid rgba(18, 18, 18, 0.2);
+  background: transparent;
+  font-family: var(--font-body), sans-serif;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: #121212;
+  transition: background-color 0.2s ease;
+}
+
+.buttonOutline:hover {
+  background: rgba(18, 18, 18, 0.05);
+}
+
+.buttonSolid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 8px;
+  background: #121212;
+  font-family: var(--font-body), sans-serif;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+.buttonSolid:hover {
+  background: #2a2a2a;
+}
+
+.footer {
+  position: relative;
+  width: 100%;
+}
+
+/* Same fill technique as HeroSection's .layerHorizon: full-bleed width,
+   height auto, object-fit contain, non-interactive. The logo watermark
+   is already baked into this asset at reduced opacity, so no separate
+   overlay image is needed. */
+.hills {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .quote {
+    padding: 64px 20px 32px;
+  }
+}

@@ -81,12 +81,13 @@ export function InvestmentCalculator() {
   return (
     <motion.section
       ref={sectionRef}
-      className="overflow-hidden w-full min-h-[900px] relative mt-0 md:-mt-16 lg:-mt-24"
+      className="overflow-hidden w-full min-h-[900px] relative mt-0"
       initial={{ opacity: 0, y: 60 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       style={{
-        backgroundImage: "url('/figma/yellowbg.png')",
+        backgroundColor: "#000000",
+        backgroundImage: "url('/figma/yellowbg-transparent.png')",
         backgroundSize: "cover",
         backgroundPosition: "center top",
         backgroundRepeat: "no-repeat",

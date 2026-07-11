@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Manrope } from "next/font/google";
+import { Inter, Manrope, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { SimpleHeader } from "@/components/ui/simple-header";
 import { PHProvider } from "./providers";
@@ -17,6 +17,12 @@ const bodyFont = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
+const monoFont = Roboto_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["500", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Desh | NRI Wealth Landing Page",
   description: "A simpler way to invest, manage, and stay compliant in India.",
@@ -28,7 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
+    <html
+      lang="en"
+      className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
+    >
       <PHProvider>
         <body>
           <PostHogPageView />

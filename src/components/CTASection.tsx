@@ -6,11 +6,6 @@ import { BlurredStagger } from "@/components/ui/blurred-stagger-text";
 import { CommunityOrbit } from "@/components/CommunityOrbit";
 import posthog from "posthog-js";
 
-const disclaimerItems = [
-  "NO SPAM. NO SALES CALLS.",
-  "JUST EXPERT GUIDANCE WHEN YOU NEED IT.",
-];
-
 export function CTASection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -98,28 +93,6 @@ export function CTASection() {
                 Join Whatsapp Community
               </span>
             </motion.a>
-          )}
-
-          {/* Disclaimer items */}
-          {isInView && (
-            <motion.div
-              className="inline-flex flex-col items-start gap-4 md:gap-6"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 1.8, ease: "easeOut" }}
-            >
-              {disclaimerItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="inline-flex items-center gap-3 md:gap-4"
-                >
-                  <div className="w-3 h-3 flex-shrink-0 bg-[#f2a100] rounded-md border-[3px] border-solid border-[#f2a10024]" />
-                  <p className="font-['General_Sans'] font-medium text-[#f2a100] text-xs md:text-sm tracking-[2px] leading-7 whitespace-nowrap">
-                    {item}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
           )}
         </div>
 

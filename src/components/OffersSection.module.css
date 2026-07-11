@@ -1,0 +1,153 @@
+.section {
+  background: #000000;
+  padding: 72px 20px 64px;
+  overflow: hidden;
+}
+
+.inner {
+  max-width: 1220px;
+  margin: 0 auto;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 620px;
+  margin: 0 auto 64px;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffc401;
+}
+
+.title {
+  margin: 0;
+  font-family: "General Sans", var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.subtitle {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #aeb4b3;
+}
+
+.cardsRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 860px) {
+  .cardsRow {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* Outer element carries the animated transform (hover lift, entrance).
+   Border-radius + overflow:hidden must NOT live on a transformed layer —
+   Chromium shows a faint light seam at the clip edge when they're
+   combined, especially against a solid black background. Kept on
+   .cardInner instead, which never has a transform applied to it. */
+.card {
+  position: relative;
+  aspect-ratio: 387 / 547;
+}
+
+.cardInner {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #111;
+}
+
+.cardImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Floating dashboard mockup — actual UI component image ── */
+.panelImage {
+  position: absolute;
+  top: 6%;
+  left: 6%;
+  width: 88%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
+  display: block;
+}
+
+/* Gradient scrim behind the caption for legibility over the photo */
+.cardScrim {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 45%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.65) 100%
+  );
+  pointer-events: none;
+}
+
+.caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(16px, 3.5vw, 24px);
+}
+
+.captionTitle {
+  margin: 0;
+  font-family: "General Sans", var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+.captionDescription {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  font-size: clamp(0.78rem, 1.3vw, 0.88rem);
+  line-height: 1.5;
+  color: #d5dad9;
+}
+
+.captionLabel {
+  margin: 4px 0 0;
+  font-family: var(--font-mono), monospace;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
