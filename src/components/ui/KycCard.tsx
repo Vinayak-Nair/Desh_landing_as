@@ -1,43 +1,47 @@
 "use client";
 
-import { motion } from "motion/react";
-import Image from "next/image";
+import { motion, useAnimation } from "motion/react";
+import { useEffect } from "react";
 import styles from "@/app/page.module.css";
 
 export function KycCard({ delay }: { delay: number }) {
+  const controls = useAnimation();
+
+  useEffect(() => {
+    controls.start({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.7, delay, ease: "easeOut" },
+    });
+  }, [controls, delay]);
+
   return (
     <motion.article
       className={`${styles.problemCard} ${styles.large} ${styles.kyc}`}
       initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay, ease: "easeOut" }}
+      animate={controls}
+      onHoverStart={() =>
+        controls.start({ y: -8, transition: { duration: 0.25, ease: "easeIn" } })
+      }
+      onHoverEnd={() =>
+        controls.start({ y: 0, transition: { duration: 0.25, ease: "easeOut" } })
+      }
     >
-      <Image
-        src="/figma/kyc-card-bg.png"
-        alt=""
-        fill
-        sizes="(min-width: 1200px) 335px, (min-width: 768px) calc((100vw - 66px) / 2), 44vw"
-        className={styles.cardBackground}
-      />
-      <div className={styles.cardOverlay} />
-      <div className={styles.cardContent}>
+      <div className={styles.cardTop}>
+        <span className={styles.cardBullet} aria-hidden="true" />
         <h3 className={styles.cardTitle}>{"Complex KYC\n& Paperwork"}</h3>
-        <p className={styles.cardDescription}>
-          {
-            "Reams of documents, overseas\nnotarisation, and bank rejections.\nWe walk you through every form,\nstep by step."
-          }
-        </p>
       </div>
-      <div className={styles.paperStack}>
-        <Image
-          src="/figma/kyc-paper.png"
-          alt=""
-          width={249}
-          height={253}
-          sizes="(min-width: 1200px) 249px, (min-width: 768px) 32vw, 30vw"
-          className={styles.paperImage}
-        />
-      </div>
+      <p className={styles.cardDescription}>
+        Reams of documents, overseas notarisation, and bank rejections. We
+        walk you through every form, step by step.
+      </p>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/icons/kyc-icon.png"
+        alt=""
+        aria-hidden="true"
+        className={styles.cardIcon}
+      />
     </motion.article>
   );
 }

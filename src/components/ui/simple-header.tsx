@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Sheet, SheetContent, SheetFooter } from '@/components/ui/sheet';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -20,6 +20,20 @@ type CalWindow = Window &
 
 export function SimpleHeader() {
 	const [open, setOpen] = React.useState(false);
+	const [hidden, setHidden] = useState(false);
+	const lastScrollY = useRef(0);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			const currentY = window.scrollY;
+			const scrolledPastThreshold = currentY > 80;
+			const scrollingDown = currentY > lastScrollY.current;
+			setHidden(scrollingDown && scrolledPastThreshold);
+			lastScrollY.current = currentY;
+		};
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, []);
 
 	const links = [
 		{ 
@@ -69,7 +83,10 @@ export function SimpleHeader() {
 	}, []);
 
 	return (
-		<header className="sticky top-0 z-50 w-full">
+		<header
+			className="sticky top-0 z-50 w-full transition-transform duration-300 ease-in-out"
+			style={{ transform: hidden ? 'translateY(-100%)' : 'translateY(0)' }}
+		>
 			<nav className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-6 lg:px-[100px]">
 				{/* Logo */}
 				<div className="flex items-center gap-2">

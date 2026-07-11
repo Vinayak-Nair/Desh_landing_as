@@ -1,9 +1,9 @@
 import styles from "./page.module.css";
 import { HeroSection } from "@/components/HeroSection";
+import { OffersSection } from "@/components/OffersSection";
 import { InvestmentCalculator } from "@/components/InvestmentCalculator";
 import { CTASection } from "@/components/CTASection";
-import { QuoteSection } from "@/components/QuoteSection";
-import { FooterSection } from "@/components/FooterSection";
+import { ClosingSection } from "@/components/ClosingSection";
 
 export default function Home() {
   return (
@@ -15,6 +15,9 @@ export default function Home() {
 
       </div>
 
+      {/* Offers section — Grow your wealth as an NRI */}
+      <OffersSection />
+
       {/* Third section — investment calculator */}
       <InvestmentCalculator />
 
@@ -24,11 +27,8 @@ export default function Home() {
       {/* Fourth section — CTA / WhatsApp community */}
       <CTASection />
 
-      {/* Quote section */}
-      <QuoteSection />
-
-      {/* Footer */}
-      <FooterSection />
+      {/* Closing quote + footer, merged into one gradient container */}
+      <ClosingSection />
     </main>
   );
 }
