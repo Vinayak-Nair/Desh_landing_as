@@ -68,7 +68,9 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 1.71rem;
+  /* one nowrap line is ~14.7× the font size wide — track the viewport
+     below 420px or the headline clips at the edges */
+  font-size: clamp(1.3rem, 6.5vw, 1.71rem);
   line-height: 1;
   text-align: center;
 }
@@ -942,7 +944,9 @@
 
   .heroTitle {
     gap: 8px;
-    font-size: clamp(3.8rem, 2.733rem + 2.222vw, 4.4rem);
+    /* the headline is one nowrap line ~14.7× the font size wide, so
+       the size must track viewport width or it overflows at 768–1199 */
+    font-size: clamp(2.6rem, 5.4vw, 4.4rem);
     line-height: 0.95;
   }
 
@@ -1390,6 +1394,21 @@
 
   .stage {
     overflow: clip;
+    /* the clip edge (or the landscape PNG's own bottom edge, on narrow
+       phones) lands within ~15px of the stage bottom — fade it out so
+       the water dissolves into the hero background instead of ending in
+       a hard line; desktop gets this blend from the problem section's
+       white gradient overlaying the landscape, which never overlaps here */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black calc(100% - 96px),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      black calc(100% - 96px),
+      transparent
+    );
   }
 
   /* Layer 1 — sun glow */
@@ -1412,7 +1431,10 @@
     object-fit: contain;
     z-index: 5;
     pointer-events: none;
-    --offset-y: calc(var(--stage-size) * 0.15);
+    /* sunk low enough that its bottom edge stays below the phone's,
+       so the water always swallows the phone (phone is taller than
+       the landscape at these widths) */
+    --offset-y: calc(var(--stage-size) * 0.3);
   }
 
   /* Layer 4 — phone: large enough to keep the investment details
@@ -1423,8 +1445,13 @@
     aspect-ratio: 424 / 872;
     overflow: visible;
     z-index: 4;
+    --phone-h: calc(min(44vw, 184px) * 872 / 424);
     --offset-x: 0;
-    --offset-y: calc(var(--stage-size) * -0.29);
+    /* Pin the phone's top just below the copy (row height here is the
+       horizon margin box: (0.6495 + 0.3) × stage-size); the old -0.29
+       pull pushed the notch above the stage's clip edge so the phone
+       appeared cropped mid-screen. */
+    --offset-y: calc(var(--phone-h) - 0.9495 * var(--stage-size) + 16px);
   }
 
   .layerPhoneImage {
@@ -1459,8 +1486,14 @@
     width: min(30vw, 320px);
     height: auto;
     z-index: 4;
+    --phone-h: calc(min(30vw, 320px) * 872 / 424);
     --offset-x: 0;
-    --offset-y: -620px;
+    /* Same pin as the ≥1200px rule: the row height is the horizon's
+       margin box (0.6495 × stage-size image + 250px offset), so
+       (phone height − row height) pins the phone's top to the top of
+       the stage, just under the copy — the fixed -620px pull dragged
+       the phone over the headline at these widths. */
+    --offset-y: calc(var(--phone-h) - 0.6495 * var(--stage-size) - 250px);
   }
 
   .layerPhoneImage {
