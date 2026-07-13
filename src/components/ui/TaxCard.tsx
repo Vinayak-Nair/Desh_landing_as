@@ -29,11 +29,13 @@ export function TaxCard({ delay }: { delay: number }) {
     >
       <div className={styles.cardTop}>
         <span className={styles.cardBullet} aria-hidden="true" />
-        <h3 className={styles.cardTitle}>{"Repatriation &\nTax Confusion"}</h3>
+        <h3 className={styles.cardTitle}>
+          {"Tax and cross-border\ntransfers, simplified"}
+        </h3>
       </div>
       <p className={styles.cardDescription}>
-        DTAA, TDS, FEMA sounds scary. We simplify the cross border tax
-        picture so your money moves freely.
+        DTAA, TDS, FEMA—we translate the rules and set things up right, so
+        moving money home is simple when you need it.
       </p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

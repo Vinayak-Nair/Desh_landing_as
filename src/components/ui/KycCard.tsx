@@ -29,11 +29,12 @@ export function KycCard({ delay }: { delay: number }) {
     >
       <div className={styles.cardTop}>
         <span className={styles.cardBullet} aria-hidden="true" />
-        <h3 className={styles.cardTitle}>{"Complex KYC\n& Paperwork"}</h3>
+        <h3 className={styles.cardTitle}>{"KYC,\nfully digital"}</h3>
       </div>
       <p className={styles.cardDescription}>
-        Reams of documents, overseas notarisation, and bank rejections. We
-        walk you through every form, step by step.
+        No couriered documents, no embassy queues, no chasing relatives for
+        signatures. Verify your identity from wherever you are, entirely
+        online.
       </p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

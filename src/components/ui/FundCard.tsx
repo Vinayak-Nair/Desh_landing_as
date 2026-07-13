@@ -29,11 +29,11 @@ export function FundCard({ delay }: { delay: number }) {
     >
       <div className={styles.cardTop}>
         <span className={styles.cardBullet} aria-hidden="true" />
-        <h3 className={styles.cardTitle}>{"Which Fund Do\nI Even Pick?"}</h3>
+        <h3 className={styles.cardTitle}>{"Portfolios,\nalready curated"}</h3>
       </div>
       <p className={styles.cardDescription}>
-        Hundreds of funds, zero guidance. We curate portfolios specifically
-        designed for NRI risk profiles and goals.
+        We shortlist and build portfolios matched to your goals and risk
+        appetite. You choose a direction, not from hundreds of funds.
       </p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

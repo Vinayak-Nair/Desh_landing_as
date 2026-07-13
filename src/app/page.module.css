@@ -86,6 +86,7 @@
 .heroSubtitle {
   max-width: 292px;
   margin: 12px auto 0;
+  text-wrap: balance;
 }
 
 .heroVisual {
@@ -155,22 +156,17 @@
 }
 
 .phoneScreen {
-  /* Fixed virtual viewport for the embedded app (it breaks below
-     phone width), centered and scaled to fit the container by
-     --phone-scale (set from a ResizeObserver in HeroSection).
-     The app renders a complete phone mockup, so it fits exactly —
-     no crop. Fallback 0 keeps the unscaled 424px frame invisible
-     until measured. */
   position: absolute;
   left: 50%;
   top: 50%;
+  display: block;
   width: 424px;
-  height: 876px;
-  border: none;
+  height: 872px;
+  border: 0;
+  background: transparent;
   transform: translate(-50%, -50%) scale(var(--phone-scale, 0));
-  /* the iframe app paints late on slow loads — match its dark UI
-     theme so the gap blends in instead of looking like a bug. */
-  background: radial-gradient(circle at 30% 15%, #16321d 0%, #0a0a0a 70%);
+  transform-origin: center;
+  filter: drop-shadow(0 20px 30px rgba(23, 35, 13, 0.2));
 }
 
 /* ── Problem section ── */
@@ -941,6 +937,7 @@
 
   .heroCopy {
     max-width: 720px;
+    transform: translateY(-8px);
   }
 
   .heroTitle {
@@ -952,6 +949,7 @@
   .heroSubtitle {
     max-width: 620px;
     font-size: clamp(1.15rem, 0.972rem + 0.37vw, 1.25rem);
+    transform: translateY(-10px);
   }
 
   .heroVisual {
@@ -1159,13 +1157,24 @@
   .hero {
     --hero-phone-width: 19.75vw;
     --hero-phone-lift: 0;
-    min-height: unset;
-    height: clamp(60vw, 60vw, 85vw);
+    /* fill the viewport below the 56px header so the composition is
+       framed by the fold instead of running 60vw deep past it */
+    min-height: 760px;
+    height: calc(100svh - 56px);
     padding-top: 48px;
   }
 
   .heroCopy {
-    max-width: 900px;
+    max-width: 1160px;
+  }
+
+  .heroTitle {
+    font-size: clamp(4.4rem, 3rem + 2vw, 5.6rem);
+  }
+
+  .heroSubtitle {
+    max-width: 860px;
+    font-size: clamp(1.25rem, 1rem + 0.35vw, 1.45rem);
   }
 
   /* heroVisual: flex:1 already set in base — no height override needed */
@@ -1361,18 +1370,12 @@
 /* Layer 4 — phone centerpiece (sized by aspect ratio) */
 .layerPhone {
   position: relative;
-  width: calc(var(--stage-size) * 0.225);
-  aspect-ratio: 424 / 876;
+  width: calc(var(--stage-size) * 0.265);
+  aspect-ratio: 424 / 872;
   z-index: 4;
   --offset-x: 0;
   --offset-y: calc(var(--stage-size) * -0.2);
-  /* the embedded mockup sits on a white page — round the clip to
-     the mockup's own corner radius (~64px at its 424px virtual
-     width) so the white page corners are cut away while the phone
-     frame itself stays fully visible. Scales with --phone-scale so
-     the arc always matches the mockup at any rendered size. */
-  border-radius: calc(var(--phone-scale, 0) * 64px);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .layerPhoneImage {
@@ -1412,21 +1415,16 @@
     --offset-y: calc(var(--stage-size) * 0.15);
   }
 
-  /* Layer 4 — phone: restored to proper phone aspect ratio and
-     proportionally sized to match the desktop appearance.
-     The iframe is rendered at a larger virtual viewport and scaled
-     down so the content looks miniaturized, not zoomed-in. */
+  /* Layer 4 — phone: large enough to keep the investment details
+     legible without overwhelming the horizon composition. */
   .layerPhone {
     position: relative;
-    width: min(28.5vw, 115px);
-    aspect-ratio: 424 / 876;
-    overflow: hidden;
+    width: min(44vw, 184px);
+    aspect-ratio: 424 / 872;
+    overflow: visible;
     z-index: 4;
     --offset-x: 0;
-    --offset-y: calc(var(--stage-size) * -0.2);
-    /* same mockup-matched radius as desktop — scales with
-       --phone-scale so the arc tracks the mockup at mobile sizes. */
-    border-radius: calc(var(--phone-scale, 0) * 64px);
+    --offset-y: calc(var(--stage-size) * -0.29);
   }
 
   .layerPhoneImage {
@@ -1457,12 +1455,12 @@
   /* Layer 4 — phone centerpiece (sized by aspect ratio) */
   .layerPhone {
     position: relative;
-    aspect-ratio: 424 / 876;
-    width: min(52%, 242px);
+    aspect-ratio: 424 / 872;
+    width: min(30vw, 320px);
     height: auto;
     z-index: 4;
     --offset-x: 0;
-    --offset-y: -150px;
+    --offset-y: -620px;
   }
 
   .layerPhoneImage {
@@ -1487,17 +1485,19 @@
   /* Layer 4 — phone centerpiece (sized by aspect ratio) */
   .layerPhone {
     position: relative;
-    width: calc(var(--stage-size) * 0.225);
-    aspect-ratio: 424 / 876;
+    width: min(30vw, 420px);
+    aspect-ratio: 424 / 872;
     z-index: 4;
+    --phone-h: calc(min(30vw, 420px) * 872 / 424);
     --offset-x: 0;
-    /* --stage-size is width-driven but this offset moves the phone
-       vertically inside a height-driven stage (75vh) — the original
-       width-scaled upward pull dragged the phone into the headline
-       on wide-but-short viewports (most laptops). A smaller,
-       viewport-height-relative pull keeps a small, consistent gap
-       under the (title + subtitle) block instead. */
-    --offset-y: -30vh;
+    /* The stage's grid row is sized by the horizon's margin box
+       (image height 0.6495 × stage-size + its 0.05 offset ≈ 0.7 ×
+       stage-size) and every layer centers inside that row, so on
+       wider screens the phone drifts down and away from the copy.
+       Setting the offset to (phone height − row height) cancels the
+       centering exactly: the phone's top edge pins to the top of the
+       stage, directly under the subtitle at any viewport size. */
+    --offset-y: calc(var(--phone-h) - 0.7 * var(--stage-size));
   }
 
   .layerPhoneImage {

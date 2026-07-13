@@ -80,17 +80,20 @@
 .footer {
   position: relative;
   width: 100%;
+  aspect-ratio: 4.306 / 1;
+  overflow: hidden;
 }
 
-/* Same fill technique as HeroSection's .layerHorizon: full-bleed width,
-   height auto, object-fit contain, non-interactive. The logo watermark
-   is already baked into this asset at reduced opacity, so no separate
-   overlay image is needed. */
+/* Show the top 80% and center 96% without modifying the source image. */
 .hills {
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 104.1667%;
+  max-width: none;
   height: auto;
-  object-fit: contain;
   display: block;
+  transform: translateX(-50%);
   pointer-events: none;
 }
 

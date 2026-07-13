@@ -16,20 +16,18 @@ export function HeroSection() {
   const isInView = useInView(cardsRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
-    // The embedded Replit app (a full phone mockup) isn't responsive
-    // below phone width, so the iframe renders at a fixed 424×876
-    // virtual viewport and is scaled to fit the container here. The
-    // scale is also used by the CSS to size the container's corner
-    // radius to the mockup's own, clipping the mockup page's white
-    // background at the corners while keeping the phone frame intact.
-    const el = phoneRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => {
-      const width = entry.contentRect.width;
-      el.style.setProperty("--phone-scale", String(width / 424));
+    const element = phoneRef.current;
+    if (!element) return;
+
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      element.style.setProperty(
+        "--phone-scale",
+        String(entry.contentRect.width / 424),
+      );
     });
-    ro.observe(el);
-    return () => ro.disconnect();
+
+    resizeObserver.observe(element);
+    return () => resizeObserver.disconnect();
   }, []);
 
   useEffect(() => {
@@ -59,10 +57,10 @@ export function HeroSection() {
         <div className={styles.heroCopy}>
           <h1 className={styles.heroTitle}>
             <span>
-              <BlurredStagger text="You earned It abroad" delay={0.2} />
-            </span>
-            <span>
-              <BlurredStagger text="watch It grow back home" delay={0.76} />
+              <BlurredStagger
+                text="The wealth platform built for NRIs."
+                delay={0.2}
+              />
             </span>
           </h1>
           <motion.p
@@ -71,7 +69,8 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.1, delay: 1.9, ease: "easeOut" }}
           >
-            A simpler way to invest, manage, and stay compliant in India
+            Grow and manage your finance with the same ambition that took you
+            abroad
           </motion.p>
         </div>
 
@@ -115,10 +114,11 @@ export function HeroSection() {
             animate={phoneControls}
           >
             <iframe
-              src="https://vicious-plum-professionals.replit.app/"
+              src="https://vicious-plum-professionals.replit.app/embed"
               title="Desh mobile app preview"
               className={styles.phoneScreen}
               scrolling="no"
+              loading="eager"
             />
           </motion.div>
         </div>
@@ -138,7 +138,7 @@ export function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
               >
-                NRI STRUGGLE IS REAL
+                FINALLY, NRI-FIRST
               </motion.p>
             )}
             <h2 className="font-['General_Sans'] font-medium text-black text-[1.5rem] md:text-[2.5rem] text-center tracking-[-1px] md:tracking-[-2px] leading-[1.15] md:leading-[1.2]">
@@ -146,13 +146,13 @@ export function HeroSection() {
                 <>
                   <span className="block">
                     <BlurredStagger
-                      text="Investing in India shouldn't"
+                      text="From paperwork to portfolio,"
                       delay={0.2}
                     />
                   </span>
                   <span className="block">
                     <BlurredStagger
-                      text="feel like a full time job."
+                      text="without the pain."
                       delay={0.7}
                     />
                   </span>
@@ -166,8 +166,8 @@ export function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, delay: 1.6, ease: "easeOut" }}
               >
-                Most NRIs give up before they start. Here&apos;s what&apos;s
-                been holding you back and how we fix all of it.
+                Everything your cross-border wealth needs, finally living in
+                the same place.
               </motion.p>
             )}
           </div>

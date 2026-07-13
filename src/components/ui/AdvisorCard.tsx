@@ -29,11 +29,11 @@ export function AdvisorCard({ delay }: { delay: number }) {
     >
       <div className={styles.cardTop}>
         <span className={styles.cardBullet} aria-hidden="true" />
-        <h3 className={styles.cardTitle}>{"No Trusted\nAdvisor Abroad"}</h3>
+        <h3 className={styles.cardTitle}>{"Personalized\nAdvice"}</h3>
       </div>
       <p className={styles.cardDescription}>
-        Local advisors don&apos;t understand Indian markets. We&apos;re your
-        certified guide familiar face, deep expertise.
+        Guidance from people who work exclusively with NRI finances, with
+        support that works around your time zone.
       </p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

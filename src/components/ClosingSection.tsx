@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { useInView } from "motion/react";
 import posthog from "posthog-js";
 import { BlurredStagger } from "@/components/ui/blurred-stagger-text";
+import footerArtwork from "../../Assets/Untitled - 14 July 2026 at 01.44.25.png";
 import styles from "./ClosingSection.module.css";
 
 export function ClosingSection() {
@@ -54,12 +56,12 @@ export function ClosingSection() {
         </div>
       </section>
       <footer className={styles.footer}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/closing/footer-hills.png"
+        <Image
+          src={footerArtwork}
           alt=""
           aria-hidden="true"
           className={styles.hills}
+          sizes="100vw"
         />
       </footer>
     </div>
